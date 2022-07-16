@@ -96,15 +96,9 @@ function preItemPickup(player: EntityPlayer, pickingUpItem: PickingUpItem) {
 
 function postRender() {
   updateOfferItems();
-  let idx = 1;
+
   Isaac.FindByType(EntityType.PICKUP, PickupVariant.COLLECTIBLE).forEach((entity) => {
     const pedestal = entity.ToPickup() as EntityPickupCollectible;
-    pedestal.OptionsPickupIndex = (pedestal.OptionsPickupIndex % 100) + idx++ * 100;
-
-    const pos = game.GetRoom().WorldToScreenPosition(pedestal.Position);
-    if (pedestal.OptionsPickupIndex % 100 !== 0) {
-      Isaac.RenderText(`${pedestal.OptionsPickupIndex % 100}`, pos.X, pos.Y - 12, 1, 1, 1, 1);
-    }
 
     if (isCollectibleInteresting(pedestal)) {
       state.room.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
