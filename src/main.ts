@@ -84,7 +84,7 @@ function postRender() {
     const pedestal = entity.ToPickup() as EntityPickupCollectible;
     pedestal.OptionsPickupIndex = (pedestal.OptionsPickupIndex % 100) + idx++ * 100;
 
-    const pos = Isaac.WorldToRenderPosition(pedestal.Position);
+    const pos = game.GetRoom().WorldToScreenPosition(pedestal.Position);
     if (pedestal.OptionsPickupIndex % 100 !== 0) {
       Isaac.RenderText(`${pedestal.OptionsPickupIndex % 100}`, pos.X, pos.Y - 12, 1, 1, 1, 1);
     }
@@ -123,7 +123,7 @@ function addTextInfoCollectible(pedestal: EntityPickupCollectible) {
 
   const group = getCollectibleGroup(pedestal);
 
-  const pos = Isaac.WorldToRenderPosition(pedestal.Position);
+  const pos = game.GetRoom().WorldToScreenPosition(pedestal.Position);
   let xOffset = 0;
 
   Isaac.RenderText(`${group}`, pos.X, pos.Y, 0, 1, 1, 1);
