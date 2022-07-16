@@ -20,20 +20,13 @@ class CustomPrinter extends tstl.LuaPrinter {
     const uuid = crypto.randomUUID();
     const debugLineToInsert = `Isaac.DebugString("CRASH DEBUG ${uuid}")\n`;
     const originalResult = super.printStatement(statement);
-    return this.createSourceNode(statement, [
-      debugLineToInsert,
-      originalResult,
-    ]);
+    return this.createSourceNode(statement, [debugLineToInsert, originalResult]);
   }
 }
 
 const plugin: tstl.Plugin = {
-  printer: (
-    program: ts.Program,
-    emitHost: tstl.EmitHost,
-    fileName: string,
-    file: tstl.File,
-  ) => new CustomPrinter(emitHost, program, fileName).print(file),
+  printer: (program: ts.Program, emitHost: tstl.EmitHost, fileName: string, file: tstl.File) =>
+    new CustomPrinter(emitHost, program, fileName).print(file),
 };
 
 // ts-prune-ignore-next

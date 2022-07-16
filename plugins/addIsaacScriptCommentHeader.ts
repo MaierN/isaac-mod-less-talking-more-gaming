@@ -22,12 +22,7 @@ see the official website: https://isaacscript.github.io/
 `;
 
 const plugin: tstl.Plugin = {
-  beforeEmit(
-    _program: ts.Program,
-    _options: tstl.CompilerOptions,
-    _emitHost: tstl.EmitHost,
-    result: tstl.EmitFile[],
-  ) {
+  beforeEmit(_program: ts.Program, _options: tstl.CompilerOptions, _emitHost: tstl.EmitHost, result: tstl.EmitFile[]) {
     for (const file of result) {
       file.code = `${INFORMATIONAL_HEADER}${file.code}`;
     }
