@@ -1,4 +1,4 @@
-import { BabySubType, CollectiblePedestalType, CollectibleType, EntityType, ModCallback, PickupVariant, PlayerVariant, RoomType } from "isaac-typescript-definitions";
+import { BabySubType, ButtonAction, CollectiblePedestalType, CollectibleType, EntityType, ModCallback, PickupVariant, PlayerVariant, RoomType } from "isaac-typescript-definitions";
 import { game, getCollectibleName, getCollectiblePedestalType, getPlayerCollectibleMap, getPlayerIndex, getPlayers, isPassiveCollectible, log, PlayerIndex, saveDataManager, upgradeMod } from "isaacscript-common";
 
 const MOD_NAME = "less-talking-more-gaming";
@@ -53,6 +53,8 @@ function postPeffectUpdate(player: EntityPlayer) {
 }
 
 function postRender() {
+  updateOfferItems();
+
   Isaac.FindByType(EntityType.PICKUP, PickupVariant.COLLECTIBLE).forEach((entity) => {
     const pedestal = entity.ToPickup() as EntityPickupCollectible;
     if (!isCollectibleInteresting(pedestal)) {
@@ -65,15 +67,28 @@ function postRender() {
 
     const allPlayerCounts = getSortedPlayers(pedestal);
 
-    let first = true;
-    allPlayerCounts.forEach(([player, count]) => {
-      Isaac.RenderText(`J${player.Index + 1}: ${count} (${state.run.itemPlayerPriorities.get(getPlayerIndex(player))?.get(group)})`, pos.X, pos.Y + ++yOffset * 12, first ? 0 : 1, first ? 1 : 0, 0, 1);
-      first = false;
-    });
+    const first = allPlayerCounts[0];
+    if (first !== undefined) {
+      allPlayerCounts.forEach(([player, count]) => {
+        const available = player === first[0] || (state.room.offerItems.get(getPlayerIndex(first[0])) ?? false);
+        Isaac.RenderText(`J${player.Index + 1}: ${count} (${state.run.itemPlayerPriorities.get(getPlayerIndex(player))?.get(group)})`, pos.X, pos.Y + ++yOffset * 12, available ? 0 : 1, available ? 1 : 0, 0, 1);
+      });
+    }
 
     state.room.itemGroups.set(pedestal.SubType, group);
 
     Isaac.RenderText(`${entity.SubType} ${getCollectibleName(pedestal.SubType)} (${group})`, pos.X, pos.Y, 0, 1, 1, 1);
+  });
+}
+
+function updateOfferItems() {
+  getSafePlayers().forEach((player) => {
+    if ([ButtonAction.SHOOT_LEFT, ButtonAction.SHOOT_RIGHT, ButtonAction.SHOOT_UP, ButtonAction.SHOOT_DOWN].every((action) => Input.IsActionPressed(action, player.ControllerIndex))) {
+      if (!(state.room.offerItems.get(getPlayerIndex(player)) ?? false)) {
+        player.AnimateHappy();
+      }
+      state.room.offerItems.set(getPlayerIndex(player), true);
+    }
   });
 }
 
@@ -84,7 +99,7 @@ function prePickupCollision(pickup: EntityPickup, collider: Entity, _low: boolea
     if (isCollectibleInteresting(pedestal) && player !== undefined && isSafePlayer(player)) {
       const first = getSortedPlayers(pedestal)[0];
       if (first !== undefined) {
-        if (getPlayerIndex(player) !== getPlayerIndex(first[0])) {
+        if (getPlayerIndex(player) !== getPlayerIndex(first[0]) && !(state.room.offerItems.get(getPlayerIndex(first[0])) ?? false)) {
           if (player.IsExtraAnimationFinished()) {
             player.AnimateSad();
           }
