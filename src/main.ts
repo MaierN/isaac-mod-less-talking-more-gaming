@@ -1,5 +1,5 @@
 import { BabySubType, ButtonAction, CollectiblePedestalType, CollectibleType, EntityType, ModCallback, PickupVariant, PlayerVariant, RoomType } from "isaac-typescript-definitions";
-import { game, getCollectibleName, getCollectiblePedestalType, getPlayerCollectibleMap, getPlayerIndex, getPlayers, isPassiveCollectible, log, PlayerIndex, saveDataManager, upgradeMod } from "isaacscript-common";
+import { CollectibleIndex, game, getCollectibleIndex, getCollectibleName, getCollectiblePedestalType, getPlayerCollectibleMap, getPlayerIndex, getPlayers, isBlindCollectible, isPassiveCollectible, log, PlayerIndex, saveDataManager, upgradeMod } from "isaacscript-common";
 
 const MOD_NAME = "less-talking-more-gaming";
 
@@ -13,6 +13,7 @@ const state = {
   room: {
     itemGroups: new Map<CollectibleType, string>(),
     offerItems: new Map<PlayerIndex, boolean>(),
+    hiddenItems: new Map<CollectibleIndex, boolean>(),
   },
 };
 
@@ -54,30 +55,21 @@ function postPeffectUpdate(player: EntityPlayer) {
 
 function postRender() {
   updateOfferItems();
-
+  let idx = 1;
   Isaac.FindByType(EntityType.PICKUP, PickupVariant.COLLECTIBLE).forEach((entity) => {
     const pedestal = entity.ToPickup() as EntityPickupCollectible;
-    if (!isCollectibleInteresting(pedestal)) {
-      return;
-    }
+    pedestal.OptionsPickupIndex = (pedestal.OptionsPickupIndex % 100) + idx++ * 100;
+
     const pos = Isaac.WorldToRenderPosition(pedestal.Position);
-    let yOffset = 0;
-
-    const group = getCollectibleGroup(pedestal);
-
-    const allPlayerCounts = getSortedPlayers(pedestal);
-
-    const first = allPlayerCounts[0];
-    if (first !== undefined) {
-      allPlayerCounts.forEach(([player, count]) => {
-        const available = player === first[0] || (state.room.offerItems.get(getPlayerIndex(first[0])) ?? false);
-        Isaac.RenderText(`J${player.Index + 1}: ${count} (${state.run.itemPlayerPriorities.get(getPlayerIndex(player))?.get(group)})`, pos.X, pos.Y + ++yOffset * 12, available ? 0 : 1, available ? 1 : 0, 0, 1);
-      });
+    if (pedestal.OptionsPickupIndex % 100 !== 0) {
+      Isaac.RenderText(`${pedestal.OptionsPickupIndex % 100}`, pos.X, pos.Y - 12, 1, 1, 1, 1);
     }
 
-    state.room.itemGroups.set(pedestal.SubType, group);
+    if (isCollectibleInteresting(pedestal)) {
+      state.room.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
 
-    Isaac.RenderText(`${entity.SubType} ${getCollectibleName(pedestal.SubType)} (${group})`, pos.X, pos.Y, 0, 1, 1, 1);
+      addTextInfoCollectible(pedestal);
+    }
   });
 }
 
@@ -90,6 +82,33 @@ function updateOfferItems() {
       state.room.offerItems.set(getPlayerIndex(player), true);
     }
   });
+}
+
+function addTextInfoCollectible(pedestal: EntityPickupCollectible) {
+  const index = getCollectibleIndex(pedestal);
+  if (!state.room.hiddenItems.has(index)) {
+    state.room.hiddenItems.set(index, isBlindCollectible(pedestal));
+  }
+  if (state.room.hiddenItems.get(index) ?? false) {
+    return;
+  }
+
+  const group = getCollectibleGroup(pedestal);
+
+  const pos = Isaac.WorldToRenderPosition(pedestal.Position);
+  let yOffset = 0;
+
+  const allPlayerCounts = getSortedPlayers(pedestal);
+
+  const first = allPlayerCounts[0];
+  if (first !== undefined) {
+    allPlayerCounts.forEach(([player, count]) => {
+      const available = player === first[0] || (state.room.offerItems.get(getPlayerIndex(first[0])) ?? false);
+      Isaac.RenderText(`J${player.Index + 1}: ${count} (${state.run.itemPlayerPriorities.get(getPlayerIndex(player))?.get(group)})`, pos.X, pos.Y + ++yOffset * 12, available ? 0 : 1, available ? 1 : 0, 0, 1);
+    });
+  }
+
+  Isaac.RenderText(`${pedestal.SubType} ${getCollectibleName(pedestal.SubType)} (${group}) ${pedestal.OptionsPickupIndex}`, pos.X, pos.Y, 0, 1, 1, 1);
 }
 
 function prePickupCollision(pickup: EntityPickup, collider: Entity, _low: boolean): boolean | undefined {
