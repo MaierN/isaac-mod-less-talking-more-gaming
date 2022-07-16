@@ -4,6 +4,7 @@ import {
   CollectiblePedestalType,
   CollectibleType,
   EntityType,
+  ItemType,
   ModCallback,
   PickupVariant,
   PlayerVariant,
@@ -14,12 +15,13 @@ import {
   game,
   getCollectibleIndex,
   getCollectiblePedestalType,
-  getPlayerCollectibleMap,
   getPlayerIndex,
   getPlayers,
   isBlindCollectible,
   isPassiveCollectible,
   log,
+  ModCallbackCustom,
+  PickingUpItem,
   PlayerIndex,
   saveDataManager,
   upgradeMod,
@@ -32,11 +34,9 @@ const state = {
   run: {
     itemCounts: new Map<PlayerIndex, Map<string, number>>(),
     itemPlayerPriorities: new Map<PlayerIndex, Map<string, number>>(),
-    inventoryCount: new Map<PlayerIndex, number>(),
-    inventoryContent: new Map<PlayerIndex, Map<CollectibleType, number>>(),
-    itemGroups: new Map<CollectibleType, string>(),
   },
   room: {
+    itemGroups: new Map<CollectibleType, string>(),
     offerItems: new Map<PlayerIndex, boolean>(),
     hiddenItems: new Map<CollectibleIndex, boolean>(),
   },
@@ -60,57 +60,37 @@ function main() {
 
   mod.AddCallback(ModCallback.POST_RENDER, postRender);
   mod.AddCallback(ModCallback.PRE_PICKUP_COLLISION, prePickupCollision);
-  mod.AddCallback(ModCallback.POST_PEFFECT_UPDATE, postPeffectUpdate);
-  mod.AddCallback(ModCallback.EXECUTE_CMD, (command, parameters, _player) => {
-    if (command === "ltmg") {
-      if (parameters === "itemCounts") {
-        for (const [playerIndex, itemCounts] of state.run.itemCounts.entries()) {
-          logMsg(`- player ${playerIndex}:`);
-          logMsg(mapToString(itemCounts));
-        }
-      } else if (parameters === "itemPlayerPriorities") {
-        for (const [playerIndex, itemPlayerPriorities] of state.run.itemPlayerPriorities.entries()) {
-          logMsg(`- player ${playerIndex}:`);
-          logMsg(mapToString(itemPlayerPriorities));
-        }
-      } else if (parameters === "inventoryCount") {
-        logMsg(mapToString(state.run.inventoryCount));
-      } else if (parameters === "itemGroups") {
-        logMsg(mapToString(state.run.itemGroups));
-      } else {
-        logMsg("wrong parameter");
-      }
-    }
-  });
+  mod.AddCallbackCustom(ModCallbackCustom.PRE_ITEM_PICKUP, preItemPickup);
+  mod.AddCallback(ModCallback.EXECUTE_CMD, executeCmd);
 
   log(`${MOD_NAME} initialized.`);
 }
 
-function postPeffectUpdate(player: EntityPlayer) {
-  if (!state.run.inventoryCount.has(getPlayerIndex(player))) {
-    state.run.inventoryCount.set(getPlayerIndex(player), player.GetCollectibleCount());
-    state.run.inventoryContent.set(getPlayerIndex(player), getPlayerCollectibleMap(player));
-  }
-
-  if (state.run.inventoryCount.get(getPlayerIndex(player)) !== player.GetCollectibleCount()) {
-    logMsg(
-      `player ${player.Index}-${getPlayerIndex(player)} inventory increased from ${state.run.inventoryCount.get(
-        getPlayerIndex(player),
-      )} to ${player.GetCollectibleCount()}`,
-    );
-
-    const oldMap = state.run.inventoryContent.get(getPlayerIndex(player)) ?? new Map<CollectibleType, number>();
-    const newMap = getPlayerCollectibleMap(player);
-
-    for (const [type, count] of newMap.entries()) {
-      for (let i = 0; i < count - (oldMap.get(type) ?? 0); i++) {
-        logMsg(`increase is item ${type}`);
-        newItemFound(player, type);
+function executeCmd(command: string, parameters: string, _player: EntityPlayer) {
+  if (command === "ltmg") {
+    if (parameters === "itemCounts") {
+      for (const [playerIndex, itemCounts] of state.run.itemCounts.entries()) {
+        logMsg(`- player ${playerIndex}:`);
+        logMsg(mapToString(itemCounts));
       }
+    } else if (parameters === "itemPlayerPriorities") {
+      for (const [playerIndex, itemPlayerPriorities] of state.run.itemPlayerPriorities.entries()) {
+        logMsg(`- player ${playerIndex}:`);
+        logMsg(mapToString(itemPlayerPriorities));
+      }
+    } else if (parameters === "itemGroups") {
+      logMsg(mapToString(state.room.itemGroups));
+    } else {
+      logMsg("wrong parameter");
     }
+  }
+}
 
-    state.run.inventoryCount.set(getPlayerIndex(player), player.GetCollectibleCount());
-    state.run.inventoryContent.set(getPlayerIndex(player), newMap);
+function preItemPickup(player: EntityPlayer, pickingUpItem: PickingUpItem) {
+  if ([ItemType.PASSIVE, ItemType.FAMILIAR].includes(pickingUpItem.itemType)) {
+    logMsg(`player ${player.Index}-${getPlayerIndex(player)} picked up ${pickingUpItem.itemType} ${pickingUpItem.subType}`);
+    const type = pickingUpItem.subType as CollectibleType;
+    newItemFound(player, type);
   }
 }
 
@@ -127,7 +107,7 @@ function postRender() {
     }
 
     if (isCollectibleInteresting(pedestal)) {
-      state.run.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
+      state.room.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
 
       addTextInfoCollectible(pedestal);
     }
@@ -318,10 +298,10 @@ function getCollectibleGroup(collectible: EntityPickupCollectible): string {
 function newItemFound(player: EntityPlayer, collectible: CollectibleType) {
   if (isSafePlayer(player)) {
     logMsg("known item groups:");
-    for (const [collectibleType, collectibleGroup] of state.run.itemGroups.entries()) {
+    for (const [collectibleType, collectibleGroup] of state.room.itemGroups.entries()) {
       logMsg(`${collectibleType}: ${collectibleGroup}`);
     }
-    const group = state.run.itemGroups.get(collectible);
+    const group = state.room.itemGroups.get(collectible);
     logMsg(`item is of group ${group}`);
     if (group !== undefined) {
       const playerIndex = getPlayerIndex(player);
