@@ -40,5 +40,5 @@ module.exports = {
   // "ignore".
   xmlWhitespaceSensitivity: "ignore",
 
-  printWidth: 1000000,
+  printWidth: 150,
 };

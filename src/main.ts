@@ -1,5 +1,29 @@
-import { BabySubType, ButtonAction, CollectiblePedestalType, CollectibleType, EntityType, ModCallback, PickupVariant, PlayerVariant, RoomType } from "isaac-typescript-definitions";
-import { CollectibleIndex, game, getCollectibleIndex, getCollectibleName, getCollectiblePedestalType, getPlayerCollectibleMap, getPlayerIndex, getPlayers, isBlindCollectible, isPassiveCollectible, log, PlayerIndex, saveDataManager, upgradeMod } from "isaacscript-common";
+import {
+  BabySubType,
+  ButtonAction,
+  CollectiblePedestalType,
+  CollectibleType,
+  EntityType,
+  ModCallback,
+  PickupVariant,
+  PlayerVariant,
+  RoomType,
+} from "isaac-typescript-definitions";
+import {
+  CollectibleIndex,
+  game,
+  getCollectibleIndex,
+  getCollectiblePedestalType,
+  getPlayerCollectibleMap,
+  getPlayerIndex,
+  getPlayers,
+  isBlindCollectible,
+  isPassiveCollectible,
+  log,
+  PlayerIndex,
+  saveDataManager,
+  upgradeMod,
+} from "isaacscript-common";
 
 const MOD_NAME = "less-talking-more-gaming";
 
@@ -75,7 +99,11 @@ function postRender() {
 
 function updateOfferItems() {
   getSafePlayers().forEach((player) => {
-    if ([ButtonAction.SHOOT_LEFT, ButtonAction.SHOOT_RIGHT, ButtonAction.SHOOT_UP, ButtonAction.SHOOT_DOWN].every((action) => Input.IsActionPressed(action, player.ControllerIndex))) {
+    if (
+      [ButtonAction.SHOOT_LEFT, ButtonAction.SHOOT_RIGHT, ButtonAction.SHOOT_UP, ButtonAction.SHOOT_DOWN].every((action) =>
+        Input.IsActionPressed(action, player.ControllerIndex),
+      )
+    ) {
       if (!(state.room.offerItems.get(getPlayerIndex(player)) ?? false)) {
         player.AnimateHappy();
       }
@@ -96,19 +124,20 @@ function addTextInfoCollectible(pedestal: EntityPickupCollectible) {
   const group = getCollectibleGroup(pedestal);
 
   const pos = Isaac.WorldToRenderPosition(pedestal.Position);
-  let yOffset = 0;
+  let xOffset = 0;
+
+  Isaac.RenderText(`${group}`, pos.X, pos.Y, 0, 1, 1, 1);
 
   const allPlayerCounts = getSortedPlayers(pedestal);
 
   const first = allPlayerCounts[0];
   if (first !== undefined) {
-    allPlayerCounts.forEach(([player, count]) => {
+    allPlayerCounts.sort(([playerA, _countA], [playerB, _countB]) => playerA.Index - playerB.Index);
+    allPlayerCounts.forEach(([player, _count]) => {
       const available = player === first[0] || (state.room.offerItems.get(getPlayerIndex(first[0])) ?? false);
-      Isaac.RenderText(`J${player.Index + 1}: ${count} (${state.run.itemPlayerPriorities.get(getPlayerIndex(player))?.get(group)})`, pos.X, pos.Y + ++yOffset * 12, available ? 0 : 1, available ? 1 : 0, 0, 1);
+      Isaac.RenderText(`J${player.Index + 1}`, pos.X + xOffset++ * 16, pos.Y + 12, available ? 0 : 1, available ? 1 : 0, 0, 1);
     });
   }
-
-  Isaac.RenderText(`${pedestal.SubType} ${getCollectibleName(pedestal.SubType)} (${group}) ${pedestal.OptionsPickupIndex}`, pos.X, pos.Y, 0, 1, 1, 1);
 }
 
 function prePickupCollision(pickup: EntityPickup, collider: Entity, _low: boolean): boolean | undefined {
@@ -132,7 +161,14 @@ function prePickupCollision(pickup: EntityPickup, collider: Entity, _low: boolea
 }
 
 function isSafePlayer(player: EntityPlayer) {
-  return player.Type === EntityType.PLAYER && player.Variant === PlayerVariant.PLAYER && !player.IsDead() && player.GetMainTwin().Index === player.Index && player.GetBabySkin() === BabySubType.UNASSIGNED && !player.IsCoopGhost();
+  return (
+    player.Type === EntityType.PLAYER &&
+    player.Variant === PlayerVariant.PLAYER &&
+    !player.IsDead() &&
+    player.GetMainTwin().Index === player.Index &&
+    player.GetBabySkin() === BabySubType.UNASSIGNED &&
+    !player.IsCoopGhost()
+  );
 }
 
 function getSafePlayers() {
@@ -172,7 +208,10 @@ function getSortedPlayers(collectible: EntityPickupCollectible) {
       return countA - countB;
     }
 
-    return (state.run.itemPlayerPriorities.get(getPlayerIndex(playerA))?.get(group) ?? 0) - (state.run.itemPlayerPriorities.get(getPlayerIndex(playerB))?.get(group) ?? 0);
+    return (
+      (state.run.itemPlayerPriorities.get(getPlayerIndex(playerA))?.get(group) ?? 0) -
+      (state.run.itemPlayerPriorities.get(getPlayerIndex(playerB))?.get(group) ?? 0)
+    );
   });
 
   return allPlayerCounts;
@@ -186,30 +225,57 @@ function getCollectibleGroup(collectible: EntityPickupCollectible): string {
   let pedestalType = getCollectiblePedestalType(collectible);
   let roomType = game.GetRoom().GetType();
 
-  if (pedestalType in [CollectiblePedestalType.LOCKED_CHEST, CollectiblePedestalType.ETERNAL_CHEST, CollectiblePedestalType.BOMB_CHEST]) {
+  if ([CollectiblePedestalType.LOCKED_CHEST, CollectiblePedestalType.ETERNAL_CHEST, CollectiblePedestalType.BOMB_CHEST].includes(pedestalType)) {
     pedestalType = CollectiblePedestalType.LOCKED_CHEST;
   }
   if (pedestalType === CollectiblePedestalType.MEGA_CHEST) {
     roomType = RoomType.TREASURE;
   }
-  if (pedestalType in [CollectiblePedestalType.LOCKED_CHEST, CollectiblePedestalType.WOODEN_CHEST, CollectiblePedestalType.OLD_CHEST, CollectiblePedestalType.MOMS_CHEST, CollectiblePedestalType.MOMS_DRESSING_TABLE, CollectiblePedestalType.RED_CHEST, CollectiblePedestalType.SLOT_MACHINE, CollectiblePedestalType.BLOOD_DONATION_MACHINE, CollectiblePedestalType.FORTUNE_TELLING_MACHINE]) {
+  if (
+    [
+      CollectiblePedestalType.LOCKED_CHEST,
+      CollectiblePedestalType.WOODEN_CHEST,
+      CollectiblePedestalType.OLD_CHEST,
+      CollectiblePedestalType.MOMS_CHEST,
+      CollectiblePedestalType.MOMS_DRESSING_TABLE,
+      CollectiblePedestalType.RED_CHEST,
+      CollectiblePedestalType.SLOT_MACHINE,
+      CollectiblePedestalType.BLOOD_DONATION_MACHINE,
+      CollectiblePedestalType.FORTUNE_TELLING_MACHINE,
+    ].includes(pedestalType)
+  ) {
     return CollectiblePedestalType[pedestalType] ?? "unknown pedestal";
   }
 
-  if (roomType in [RoomType.SHOP, RoomType.BLACK_MARKET]) {
+  if ([RoomType.SHOP, RoomType.BLACK_MARKET].includes(roomType)) {
     roomType = RoomType.SHOP;
   }
-  if (roomType in [RoomType.TREASURE, RoomType.DUNGEON, RoomType.CHALLENGE, RoomType.BOSS_RUSH]) {
+  if ([RoomType.TREASURE, RoomType.DUNGEON, RoomType.CHALLENGE, RoomType.BOSS_RUSH].includes(roomType)) {
     roomType = RoomType.TREASURE;
   }
-  if (roomType in [RoomType.ANGEL, RoomType.SACRIFICE]) {
+  if ([RoomType.ANGEL, RoomType.SACRIFICE].includes(roomType)) {
     roomType = RoomType.ANGEL;
   }
-  if (roomType in [RoomType.SHOP, RoomType.ERROR, RoomType.BOSS, RoomType.MINI_BOSS, RoomType.SECRET, RoomType.CURSE, RoomType.TREASURE, RoomType.ANGEL, RoomType.LIBRARY, RoomType.DEVIL, RoomType.PLANETARIUM, RoomType.ULTRA_SECRET]) {
+  if (
+    [
+      RoomType.SHOP,
+      RoomType.ERROR,
+      RoomType.BOSS,
+      RoomType.MINI_BOSS,
+      RoomType.SECRET,
+      RoomType.CURSE,
+      RoomType.TREASURE,
+      RoomType.ANGEL,
+      RoomType.LIBRARY,
+      RoomType.DEVIL,
+      RoomType.PLANETARIUM,
+      RoomType.ULTRA_SECRET,
+    ].includes(roomType)
+  ) {
     return RoomType[roomType] ?? "unknown room";
   }
 
-  return "default";
+  return "DEFAULT";
 }
 
 function newItemFound(player: EntityPlayer, collectible: CollectibleType) {
@@ -219,7 +285,7 @@ function newItemFound(player: EntityPlayer, collectible: CollectibleType) {
       const playerIndex = getPlayerIndex(player);
       const previousCount = state.run.itemCounts.get(playerIndex)?.get(group) ?? 0;
       state.run.itemCounts.get(playerIndex)?.set(group, previousCount + 1);
-      print(`${collectible} incremented ${group} to ${previousCount + 1}`);
+      Isaac.DebugString(`${collectible} incremented ${group} to ${previousCount + 1} for player ${player.Index}-${playerIndex}`);
     }
   }
 }
