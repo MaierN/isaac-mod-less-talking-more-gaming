@@ -25,7 +25,8 @@ import {
   upgradeMod,
 } from "isaacscript-common";
 
-const MOD_NAME = "less-talking-more-gaming";
+const MOD_NAME = "Less talking. More gaming.";
+const DEBUG = true;
 
 const state = {
   run: {
@@ -33,15 +34,23 @@ const state = {
     itemPlayerPriorities: new Map<PlayerIndex, Map<string, number>>(),
     inventoryCount: new Map<PlayerIndex, number>(),
     inventoryContent: new Map<PlayerIndex, Map<CollectibleType, number>>(),
+    itemGroups: new Map<CollectibleType, string>(),
   },
   room: {
-    itemGroups: new Map<CollectibleType, string>(),
     offerItems: new Map<PlayerIndex, boolean>(),
     hiddenItems: new Map<CollectibleIndex, boolean>(),
   },
 };
 
 main();
+
+function mapToString<K, V>(map: Map<K, V>) {
+  const res: string[] = [];
+  for (const [key, value] of map.entries()) {
+    res.push(`${key}: ${value}`);
+  }
+  return res.join(", ");
+}
 
 function main() {
   const modVanilla = RegisterMod(MOD_NAME, 1);
@@ -52,6 +61,27 @@ function main() {
   mod.AddCallback(ModCallback.POST_RENDER, postRender);
   mod.AddCallback(ModCallback.PRE_PICKUP_COLLISION, prePickupCollision);
   mod.AddCallback(ModCallback.POST_PEFFECT_UPDATE, postPeffectUpdate);
+  mod.AddCallback(ModCallback.EXECUTE_CMD, (command, parameters, _player) => {
+    if (command === "ltmg") {
+      if (parameters === "itemCounts") {
+        for (const [playerIndex, itemCounts] of state.run.itemCounts.entries()) {
+          logMsg(`- player ${playerIndex}:`);
+          logMsg(mapToString(itemCounts));
+        }
+      } else if (parameters === "itemPlayerPriorities") {
+        for (const [playerIndex, itemPlayerPriorities] of state.run.itemPlayerPriorities.entries()) {
+          logMsg(`- player ${playerIndex}:`);
+          logMsg(mapToString(itemPlayerPriorities));
+        }
+      } else if (parameters === "inventoryCount") {
+        logMsg(mapToString(state.run.inventoryCount));
+      } else if (parameters === "itemGroups") {
+        logMsg(mapToString(state.run.itemGroups));
+      } else {
+        logMsg("wrong parameter");
+      }
+    }
+  });
 
   log(`${MOD_NAME} initialized.`);
 }
@@ -63,11 +93,18 @@ function postPeffectUpdate(player: EntityPlayer) {
   }
 
   if (state.run.inventoryCount.get(getPlayerIndex(player)) !== player.GetCollectibleCount()) {
+    logMsg(
+      `player ${player.Index}-${getPlayerIndex(player)} inventory increased from ${state.run.inventoryCount.get(
+        getPlayerIndex(player),
+      )} to ${player.GetCollectibleCount()}`,
+    );
+
     const oldMap = state.run.inventoryContent.get(getPlayerIndex(player)) ?? new Map<CollectibleType, number>();
     const newMap = getPlayerCollectibleMap(player);
 
     for (const [type, count] of newMap.entries()) {
       for (let i = 0; i < count - (oldMap.get(type) ?? 0); i++) {
+        logMsg(`increase is item ${type}`);
         newItemFound(player, type);
       }
     }
@@ -90,7 +127,7 @@ function postRender() {
     }
 
     if (isCollectibleInteresting(pedestal)) {
-      state.room.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
+      state.run.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
 
       addTextInfoCollectible(pedestal);
     }
@@ -280,12 +317,25 @@ function getCollectibleGroup(collectible: EntityPickupCollectible): string {
 
 function newItemFound(player: EntityPlayer, collectible: CollectibleType) {
   if (isSafePlayer(player)) {
-    const group = state.room.itemGroups.get(collectible);
+    logMsg("known item groups:");
+    for (const [collectibleType, collectibleGroup] of state.run.itemGroups.entries()) {
+      logMsg(`${collectibleType}: ${collectibleGroup}`);
+    }
+    const group = state.run.itemGroups.get(collectible);
+    logMsg(`item is of group ${group}`);
     if (group !== undefined) {
       const playerIndex = getPlayerIndex(player);
       const previousCount = state.run.itemCounts.get(playerIndex)?.get(group) ?? 0;
       state.run.itemCounts.get(playerIndex)?.set(group, previousCount + 1);
-      Isaac.DebugString(`${collectible} incremented ${group} to ${previousCount + 1} for player ${player.Index}-${playerIndex}`);
+      logMsg(`${collectible} incremented ${group} to ${previousCount + 1} for player ${player.Index}-${playerIndex}`);
     }
+  }
+}
+
+function logMsg(msg: string, toConsole = true) {
+  Isaac.DebugString(msg);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (DEBUG && toConsole) {
+    print(msg);
   }
 }
