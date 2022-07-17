@@ -12,6 +12,7 @@ import {
 } from "isaac-typescript-definitions";
 import {
   CollectibleIndex,
+  DefaultMap,
   game,
   getCollectibleIndex,
   getCollectiblePedestalType,
@@ -32,13 +33,13 @@ const DEBUG = false;
 
 const state = {
   run: {
-    itemCounts: new Map<PlayerIndex, Map<string, number>>(),
-    itemPlayerPriorities: new Map<PlayerIndex, Map<string, number>>(),
+    itemCounts: new DefaultMap<PlayerIndex, DefaultMap<string, number>>(() => new DefaultMap<string, number>(0)),
+    itemPlayerPriorities: new DefaultMap<PlayerIndex, DefaultMap<string, number>>(() => new DefaultMap<string, number>(() => Math.random())),
   },
   room: {
     itemGroups: new Map<CollectibleType, string>(),
-    offerItems: new Map<PlayerIndex, boolean>(),
-    hiddenItems: new Map<CollectibleIndex, boolean>(),
+    offerItems: new DefaultMap<PlayerIndex, boolean>(false),
+    hiddenItems: new DefaultMap<CollectibleIndex, boolean, [arg: EntityPickupCollectible]>((pedestal) => isBlindCollectible(pedestal)),
   },
 };
 
@@ -117,7 +118,7 @@ function updateOfferItems() {
         Input.IsActionPressed(action, player.ControllerIndex),
       )
     ) {
-      if (!(state.room.offerItems.get(getPlayerIndex(player)) ?? false)) {
+      if (!state.room.offerItems.getAndSetDefault(getPlayerIndex(player))) {
         player.AnimateHappy();
       }
       state.room.offerItems.set(getPlayerIndex(player), true);
@@ -127,10 +128,7 @@ function updateOfferItems() {
 
 function addTextInfoCollectible(pedestal: EntityPickupCollectible) {
   const index = getCollectibleIndex(pedestal);
-  if (!state.room.hiddenItems.has(index)) {
-    state.room.hiddenItems.set(index, isBlindCollectible(pedestal));
-  }
-  if (state.room.hiddenItems.get(index) ?? false) {
+  if (state.room.hiddenItems.getAndSetDefault(index, pedestal)) {
     return;
   }
 
@@ -147,7 +145,7 @@ function addTextInfoCollectible(pedestal: EntityPickupCollectible) {
   if (first !== undefined) {
     allPlayerCounts.sort(([playerA, _countA], [playerB, _countB]) => playerA.Index - playerB.Index);
     allPlayerCounts.forEach(([player, _count]) => {
-      const available = player === first[0] || (state.room.offerItems.get(getPlayerIndex(first[0])) ?? false);
+      const available = player === first[0] || state.room.offerItems.getAndSetDefault(getPlayerIndex(first[0]));
       Isaac.RenderText(`J${player.Index + 1}`, pos.X + xOffset++ * 16, pos.Y + 12, available ? 0 : 1, available ? 1 : 0, 0, 1);
     });
   }
@@ -160,7 +158,7 @@ function prePickupCollision(pickup: EntityPickup, collider: Entity, _low: boolea
     if (isCollectibleInteresting(pedestal) && player !== undefined && isSafePlayer(player)) {
       const first = getSortedPlayers(pedestal)[0];
       if (first !== undefined) {
-        if (getPlayerIndex(player) !== getPlayerIndex(first[0]) && !(state.room.offerItems.get(getPlayerIndex(first[0])) ?? false)) {
+        if (getPlayerIndex(player) !== getPlayerIndex(first[0]) && !state.room.offerItems.getAndSetDefault(getPlayerIndex(first[0]))) {
           if (player.IsExtraAnimationFinished()) {
             player.AnimateSad();
           }
@@ -195,23 +193,7 @@ function getSortedPlayers(collectible: EntityPickupCollectible) {
 
   getSafePlayers().forEach((player) => {
     const playerIndex = getPlayerIndex(player);
-    if (!state.run.itemCounts.has(playerIndex)) {
-      state.run.itemCounts.set(playerIndex, new Map<string, number>());
-    }
-
-    const itemCounts = state.run.itemCounts.get(playerIndex) ?? new Map<string, number>();
-    if (!itemCounts.has(group)) {
-      itemCounts.set(group, 0);
-    }
-    const count = itemCounts.get(group) ?? 0;
-
-    if (!state.run.itemPlayerPriorities.has(playerIndex)) {
-      state.run.itemPlayerPriorities.set(playerIndex, new Map<string, number>());
-    }
-    const playerPriorities = state.run.itemPlayerPriorities.get(playerIndex) ?? new Map<string, number>();
-    if (!playerPriorities.has(group)) {
-      playerPriorities.set(group, Math.random());
-    }
+    const count = state.run.itemCounts.getAndSetDefault(playerIndex).getAndSetDefault(group);
 
     allPlayerCounts.push([player, count]);
   });
@@ -222,8 +204,8 @@ function getSortedPlayers(collectible: EntityPickupCollectible) {
     }
 
     return (
-      (state.run.itemPlayerPriorities.get(getPlayerIndex(playerA))?.get(group) ?? 0) -
-      (state.run.itemPlayerPriorities.get(getPlayerIndex(playerB))?.get(group) ?? 0)
+      state.run.itemPlayerPriorities.getAndSetDefault(getPlayerIndex(playerA)).getAndSetDefault(group) -
+      state.run.itemPlayerPriorities.getAndSetDefault(getPlayerIndex(playerB)).getAndSetDefault(group)
     );
   });
 
@@ -301,8 +283,8 @@ function newItemFound(player: EntityPlayer, collectible: CollectibleType) {
     logMsg(`item is of group ${group}`);
     if (group !== undefined) {
       const playerIndex = getPlayerIndex(player);
-      const previousCount = state.run.itemCounts.get(playerIndex)?.get(group) ?? 0;
-      state.run.itemCounts.get(playerIndex)?.set(group, previousCount + 1);
+      const previousCount = state.run.itemCounts.getAndSetDefault(playerIndex).getAndSetDefault(group);
+      state.run.itemCounts.getAndSetDefault(playerIndex).set(group, previousCount + 1);
       logMsg(`${collectible} incremented ${group} to ${previousCount + 1} for player ${player.Index}-${playerIndex}`);
     }
   }
