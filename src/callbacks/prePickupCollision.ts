@@ -16,9 +16,6 @@ function main(pickup: EntityPickup, collider: Entity, _low: boolean): boolean | 
       const first = getSortedPlayers(pedestal)[0];
       if (first !== undefined) {
         if (getPlayerIndex(player) !== getPlayerIndex(first[0]) && !state.room.offerItems.getAndSetDefault(getPlayerIndex(first[0]))) {
-          if (player.IsExtraAnimationFinished()) {
-            player.AnimateSad();
-          }
           return false;
         }
       }

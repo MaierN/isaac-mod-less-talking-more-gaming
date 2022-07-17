@@ -2,8 +2,8 @@ import { ButtonAction, EntityType, ModCallback, PickupVariant } from "isaac-type
 import { getPlayerIndex, ModUpgraded } from "isaacscript-common";
 import { getCollectibleGroup, isCollectibleInteresting } from "../collectible";
 import { getSafePlayers } from "../player";
+import { addTextInfoCollectible } from "../renderInfo";
 import { state } from "../state";
-import { addTextInfoCollectible } from "../text";
 
 export function initCbPostRender(mod: ModUpgraded): void {
   mod.AddCallback(ModCallback.POST_RENDER, main);
