@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <name>Less talking. More Gaming.</name>
+  <name>Less talking. More Gaming. (Fair item distribution in co-op)</name>
   <directory>less talking more gaming</directory>
   <id>2836331272</id>
   <description>[b]Less talking. More gaming.[/b]
-[i]A fair item repartition in co-op[/i]
+[i]A fair item distribution in co-op[/i]
 
 This mod assigns each encountered item to a single player, making the item available only for the selected player.
 
