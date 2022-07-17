@@ -12,3 +12,5 @@ mod/resources/luarooms/**/*.xml
 
 # Ignore all of the XML files created by the animation editor.
 mod/resources/**/*.anm2
+
+mod/metadata.xml
