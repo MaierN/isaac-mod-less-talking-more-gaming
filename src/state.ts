@@ -5,10 +5,10 @@ export const state = {
   run: {
     itemCounts: new DefaultMap<PlayerIndex, DefaultMap<string, number>>(() => new DefaultMap<string, number>(0)),
     itemPlayerPriorities: new DefaultMap<PlayerIndex, DefaultMap<string, number>>(() => new DefaultMap<string, number>(() => Math.random())),
+    test: 42,
   },
   room: {
     itemGroups: new Map<CollectibleType, string>(),
-    offerItems: new DefaultMap<PlayerIndex, boolean>(false),
     hiddenItems: new DefaultMap<CollectibleIndex, boolean, [arg: EntityPickupCollectible]>((pedestal) => isBlindCollectible(pedestal)),
   },
 };

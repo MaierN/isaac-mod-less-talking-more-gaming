@@ -1,7 +1,7 @@
 import { ButtonAction, EntityType, ModCallback, PickupVariant } from "isaac-typescript-definitions";
-import { getPlayerIndex, ModUpgraded } from "isaacscript-common";
+import { ModUpgraded } from "isaacscript-common";
 import { getCollectibleGroup, isCollectibleInteresting } from "../collectible";
-import { getSafePlayers } from "../player";
+import { getAliveRealPlayers } from "../playerCtrl";
 import { addTextInfoCollectible } from "../renderInfo";
 import { state } from "../state";
 
@@ -10,16 +10,16 @@ export function initCbPostRender(mod: ModUpgraded): void {
 }
 
 function main() {
-  getSafePlayers().forEach((player) => {
+  getAliveRealPlayers().forEach((realPlayer) => {
     if (
       [ButtonAction.SHOOT_LEFT, ButtonAction.SHOOT_RIGHT, ButtonAction.SHOOT_UP, ButtonAction.SHOOT_DOWN].every((action) =>
-        Input.IsActionPressed(action, player.ControllerIndex),
+        realPlayer.isActionPressed(action),
       )
     ) {
-      if (!state.room.offerItems.getAndSetDefault(getPlayerIndex(player))) {
-        player.AnimateHappy();
+      if (!realPlayer.isOfferingItems()) {
+        realPlayer.animateHappy();
       }
-      state.room.offerItems.set(getPlayerIndex(player), true);
+      realPlayer.offerItems();
     }
   });
 
@@ -29,7 +29,7 @@ function main() {
     if (isCollectibleInteresting(pedestal)) {
       state.room.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
 
-      if (getSafePlayers().length > 1) {
+      if (getAliveRealPlayers().length > 1) {
         addTextInfoCollectible(pedestal);
       }
     }
