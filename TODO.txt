@@ -1,0 +1,3 @@
+
+probablement bug avec Jacob&Esau et Tainted Forgotten (enlever check "safe player" dans check collision)
++ compatbilisation quand le perso secondaire prend l'item
