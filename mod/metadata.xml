@@ -1,8 +1,31 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <name>Less talking. More Gaming.</name>
   <directory>less talking more gaming</directory>
-  <description>Less talking. More gaming. is a currently a work in progress.</description>
-  <version>1.0</version>
-  <visibility />
+  <id>2836331272</id>
+  <description>[b]Less talking. More gaming.[/b]
+[i]A fair item repartition in co-op[/i]
+
+This mod assigns each encountered item to a single player, making the item available only for the selected player.
+
+[h3]Why[/h3]
+The goal is to avoid endless discussion about who should get which items in co-op.
+
+[h3]Item protection[/h3]
+In addition to the overlay showing the head and the number of the selected player, the mod completely denies unauthorized players to collect the item.
+
+[h3]Fairness[/h3]
+The mod tries to create a fair distribution of the items based on the item pools (each player will end up with approximately the same amount of treasure room items, angel room items, etc...)
+
+If all players have the same number of items from the pool, the item is attributed by following an order randomly chosen at the beginning of the run.
+
+[h3]I don't want this item...[/h3]
+A player can offer its items to the other players by pressing all 4 shoot buttons (A, B, X, Y) at the same time. This lets any player pick up the item, until the players leave the room.
+
+[h3]Exceptions[/h3]
+Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective.
+  </description>
+  <version>1.1</version>
+  <visibility>Public</visibility>
+  <tag id="Tweaks"/>
 </metadata>
