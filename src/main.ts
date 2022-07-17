@@ -28,7 +28,7 @@ import {
 } from "isaacscript-common";
 
 const MOD_NAME = "Less talking. More gaming.";
-const DEBUG = true;
+const DEBUG = false;
 
 const state = {
   run: {
@@ -103,7 +103,9 @@ function postRender() {
     if (isCollectibleInteresting(pedestal)) {
       state.room.itemGroups.set(pedestal.SubType, getCollectibleGroup(pedestal));
 
-      addTextInfoCollectible(pedestal);
+      if (getSafePlayers().length > 1) {
+        addTextInfoCollectible(pedestal);
+      }
     }
   });
 }
