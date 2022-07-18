@@ -4,7 +4,7 @@ import { CollectibleIndex, DefaultMap, isBlindCollectible, PlayerIndex, saveData
 export const state = {
   run: {
     itemCounts: new DefaultMap<PlayerIndex, DefaultMap<string, number>>(() => new DefaultMap<string, number>(0)),
-    itemPlayerPriorities: new DefaultMap<PlayerIndex, DefaultMap<string, number>>(() => new DefaultMap<string, number>(() => Math.random())),
+    itemPlayerPriorities: new DefaultMap<string, number>(() => Math.random()),
   },
   room: {
     itemGroups: new Map<CollectibleType, string>(),

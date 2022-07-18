@@ -5,10 +5,9 @@ import { initCbPostRender } from "./callbacks/postRender";
 import { initCbPostUpdate } from "./callbacks/postUpdate";
 import { initCbPreItemPickup } from "./callbacks/preItemPickup";
 import { initCbPrePickupCollision } from "./callbacks/prePickupCollision";
+import { MOD_NAME } from "./config";
 import { initPlayerCtrl } from "./playerCtrl";
 import { initState } from "./state";
-
-const MOD_NAME = "Less talking. More gaming.";
 
 main();
 

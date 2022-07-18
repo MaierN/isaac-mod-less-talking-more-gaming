@@ -1,4 +1,5 @@
 import { ModCallback } from "isaac-typescript-definitions";
+import { MOD_NAME, MOD_VERSION } from "../config";
 import { logMsg, mapToString, toggleDebug } from "../debug";
 import { characterToRealPlayer } from "../playerCtrl";
 import { state } from "../state";
@@ -15,6 +16,12 @@ function executeCmd(command: string, parameters: string, _player: EntityPlayer) 
   if (command === "ltmg") {
     const commands = new Map([
       [
+        "version",
+        () => {
+          printMsg(`${MOD_NAME} ${MOD_VERSION}`);
+        },
+      ],
+      [
         "itemCounts",
         () => {
           for (const [playerIndex, itemCounts] of state.run.itemCounts.entries()) {
@@ -26,9 +33,8 @@ function executeCmd(command: string, parameters: string, _player: EntityPlayer) 
       [
         "itemPlayerPriorities",
         () => {
-          for (const [playerIndex, itemPlayerPriorities] of state.run.itemPlayerPriorities.entries()) {
-            printMsg(`- player ${playerIndex}:`);
-            printMsg(mapToString(itemPlayerPriorities));
+          for (const [playerIndexAndGroup, itemPlayerPriority] of state.run.itemPlayerPriorities.entries()) {
+            printMsg(`- player/group ${playerIndexAndGroup}: ${itemPlayerPriority}`);
           }
         },
       ],

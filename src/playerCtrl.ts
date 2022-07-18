@@ -28,7 +28,7 @@ export class RealPlayer {
   }
 
   toString(): string {
-    return `${this.mainCharacter.Index}-${getPlayerName(this.mainCharacter)}`;
+    return `${this.mainCharacter.Index}-${getPlayerName(this.mainCharacter)}-${getPlayerIndex(this.mainCharacter)}`;
   }
 
   offerItems(): void {
@@ -102,8 +102,8 @@ export function getSortedRealPlayers(collectible: EntityPickupCollectible): Arra
     }
 
     return (
-      state.run.itemPlayerPriorities.getAndSetDefault(getPlayerIndex(playerA.mainCharacter)).getAndSetDefault(group) -
-      state.run.itemPlayerPriorities.getAndSetDefault(getPlayerIndex(playerB.mainCharacter)).getAndSetDefault(group)
+      state.run.itemPlayerPriorities.getAndSetDefault(`${getPlayerIndex(playerA.mainCharacter)}/${group}`) -
+      state.run.itemPlayerPriorities.getAndSetDefault(`${getPlayerIndex(playerB.mainCharacter)}/${group}`)
     );
   });
 

@@ -25,7 +25,7 @@ A player can offer its items to the other players by pressing all 4 shoot button
 [h3]Exceptions[/h3]
 Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective.
   </description>
-  <version>1.1</version>
+  <version>1.3</version>
   <visibility>Public</visibility>
   <tag id="Tweaks"/>
 </metadata>

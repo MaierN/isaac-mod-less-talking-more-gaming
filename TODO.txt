@@ -1,14 +1,5 @@
 
-probablement bug avec Jacob&Esau et Tainted Forgotten (enlever check "safe player" dans check collision)
-+ compatbilisation quand le perso secondaire prend l'item
-
-ok- lazarus
-ok- the forgotten
-- jacob & esau
-
-- t lazarus
-- t the forgotten
-
 - t cain ??
+- proper random
 
-si certaines fonctions marchent pas dans certains callbacks, alors ajouter un warning au runtime
+isaacscript -> si certaines fonctions marchent pas dans certains callbacks, alors ajouter un warning au runtime
