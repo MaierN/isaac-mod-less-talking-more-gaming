@@ -2,9 +2,6 @@
 probablement bug avec Jacob&Esau et Tainted Forgotten (enlever check "safe player" dans check collision)
 + compatbilisation quand le perso secondaire prend l'item
 
-enlever tout
-+ state devrait pas contenir des objets apparemment
-
 ok- lazarus
 ok- the forgotten
 - jacob & esau
@@ -13,3 +10,15 @@ ok- the forgotten
 - t the forgotten
 
 - t cain ??
+
+enlever tout
++ state devrait pas contenir des DefaultMap (bug a report)
+-> test si Set ok
+
+
+- collision
+- overlay
+- counter
+- item groups
+
+getallrestrictedcollectibles
