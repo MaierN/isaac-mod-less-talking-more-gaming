@@ -62,6 +62,8 @@ export function addRealPlayer(mainCharacter: EntityPlayer, characters: Set<Entit
       (character) => character.Type === EntityType.PLAYER && character.Variant === PlayerVariant.PLAYER && !character.IsCoopGhost(),
     )
   ) {
+    logMsg("trying to add real player");
+
     const realPlayer = new RealPlayer(mainCharacter, characters);
     playerCtrlState.run.realPlayers.push(realPlayer);
     characters.forEach((character) => {

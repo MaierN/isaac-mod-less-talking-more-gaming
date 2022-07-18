@@ -1,8 +1,23 @@
 import { CollectiblePedestalType, CollectibleType, RoomType } from "isaac-typescript-definitions";
 import { game, getCollectiblePedestalType, isPassiveCollectible } from "isaacscript-common";
 
+const questItems = [
+  CollectibleType.KEY_PIECE_1,
+  CollectibleType.KEY_PIECE_2,
+  CollectibleType.KNIFE_PIECE_1,
+  CollectibleType.KNIFE_PIECE_2,
+  CollectibleType.DADS_NOTE,
+  CollectibleType.BROKEN_SHOVEL_1,
+  CollectibleType.BROKEN_SHOVEL_2,
+];
+
 export function isCollectibleInteresting(collectible: EntityPickupCollectible): boolean {
-  return collectible.SubType !== CollectibleType.NULL && isPassiveCollectible(collectible.SubType) && collectible.Price >= 0;
+  return (
+    collectible.SubType !== CollectibleType.NULL &&
+    isPassiveCollectible(collectible.SubType) &&
+    collectible.Price >= 0 &&
+    !questItems.includes(collectible.SubType)
+  );
 }
 
 export function getCollectibleGroup(collectible: EntityPickupCollectible): string {
