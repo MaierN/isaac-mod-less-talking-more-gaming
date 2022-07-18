@@ -1,4 +1,9 @@
-const DEBUG = true;
+let debug = false;
+
+export function toggleDebug(): void {
+  debug = !debug;
+  logMsg(`debug: ${debug}`, true);
+}
 
 export function mapToString<K, V>(map: Map<K, V>): string {
   const res: string[] = [];
@@ -19,8 +24,7 @@ export function setToString<T>(set: Set<T>): string {
 export function logMsg(msg: string, toConsole = false): void {
   Isaac.DebugString(msg);
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (DEBUG || toConsole) {
+  if (debug || toConsole) {
     print(msg);
   }
 }

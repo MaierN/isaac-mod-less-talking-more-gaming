@@ -11,14 +11,4 @@ ok- the forgotten
 
 - t cain ??
 
-enlever tout
-+ state devrait pas contenir des DefaultMap (bug a report)
--> test si Set ok
-
-
-- collision
-- overlay
-- counter
-- item groups
-
-getallrestrictedcollectibles
+si certaines fonctions marchent pas dans certains callbacks, alors ajouter un warning au runtime

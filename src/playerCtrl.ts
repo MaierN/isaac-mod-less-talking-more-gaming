@@ -4,7 +4,7 @@ import { getCollectibleGroup } from "./collectible";
 import { logMsg } from "./debug";
 import { state } from "./state";
 
-export const playerCtrlState = {
+const playerCtrlState = {
   run: {
     realPlayers: [] as RealPlayer[],
     characterToRealPlayerMap: new Map<PlayerIndex, RealPlayer>(),

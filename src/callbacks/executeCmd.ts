@@ -1,7 +1,6 @@
 import { ModCallback } from "isaac-typescript-definitions";
-import { getAllPlayers, getPlayerIndex, getPlayers } from "isaacscript-common";
-import { logMsg, mapToString } from "../debug";
-import { characterToRealPlayer, playerCtrlState } from "../playerCtrl";
+import { logMsg, mapToString, toggleDebug } from "../debug";
+import { characterToRealPlayer } from "../playerCtrl";
 import { state } from "../state";
 
 export function initCbExecuteCmd(mod: Mod): void {
@@ -42,16 +41,7 @@ function executeCmd(command: string, parameters: string, _player: EntityPlayer) 
       [
         "debug",
         () => {
-          print("a");
-          getPlayers().forEach((player) => {
-            print(player.Index, player.ControllerIndex, getPlayerIndex(player));
-          });
-          print("b");
-          getAllPlayers().forEach((player) => {
-            print(player.Index, player.ControllerIndex, getPlayerIndex(player));
-          });
-          print("c");
-          print(playerCtrlState.run.realPlayers.length);
+          toggleDebug();
         },
       ],
     ]);

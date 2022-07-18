@@ -2,6 +2,7 @@ import { log, upgradeMod } from "isaacscript-common";
 import { initCbExecuteCmd } from "./callbacks/executeCmd";
 import { initCbPostPlayerInit } from "./callbacks/postPlayerInit";
 import { initCbPostRender } from "./callbacks/postRender";
+import { initCbPostUpdate } from "./callbacks/postUpdate";
 import { initCbPreItemPickup } from "./callbacks/preItemPickup";
 import { initCbPrePickupCollision } from "./callbacks/prePickupCollision";
 import { initPlayerCtrl } from "./playerCtrl";
@@ -23,6 +24,7 @@ function main() {
   initCbPreItemPickup(mod);
   initCbExecuteCmd(mod);
   initCbPostPlayerInit(mod);
+  initCbPostUpdate(mod);
 
   log(`${MOD_NAME} initialized.`);
 }
