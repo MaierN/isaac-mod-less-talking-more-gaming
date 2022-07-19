@@ -1,4 +1,4 @@
-import { EntityType, ModCallback, PickupVariant } from "isaac-typescript-definitions";
+import { EntityType, ModCallback, PickupVariant, PlayerVariant } from "isaac-typescript-definitions";
 import { getPlayerIndex, isChildPlayer, ModUpgraded } from "isaacscript-common";
 import { isCollectibleInteresting } from "../collectible";
 import { config } from "../config";
@@ -17,7 +17,13 @@ function main(pickup: EntityPickup, collider: Entity, _low: boolean): boolean | 
     const player = collider.ToPlayer();
     const pedestal = pickup as EntityPickupCollectible;
 
-    if (isCollectibleInteresting(pedestal) && player !== undefined && !isChildPlayer(player)) {
+    if (
+      isCollectibleInteresting(pedestal) &&
+      player !== undefined &&
+      player.Variant === PlayerVariant.PLAYER &&
+      !player.IsCoopGhost() &&
+      !isChildPlayer(player)
+    ) {
       const first = getSortedRealPlayers(pedestal)[0];
       if (first !== undefined) {
         const realPlayer = characterToRealPlayer(getPlayerIndex(player));
