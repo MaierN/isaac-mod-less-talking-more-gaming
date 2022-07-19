@@ -1,4 +1,4 @@
-import { ButtonAction, EntityType, PlayerVariant } from "isaac-typescript-definitions";
+import { ButtonAction } from "isaac-typescript-definitions";
 import { DefaultMap, getPlayerIndex, getPlayerName, PlayerIndex, saveDataManager } from "isaacscript-common";
 import { getCollectibleGroup } from "./collectible";
 import { logMsg } from "./debug";
@@ -57,21 +57,15 @@ export class RealPlayer {
 }
 
 export function addRealPlayer(mainCharacter: EntityPlayer, characters: Set<EntityPlayer>): void {
-  if (
-    [...characters].every(
-      (character) => character.Type === EntityType.PLAYER && character.Variant === PlayerVariant.PLAYER && !character.IsCoopGhost(),
-    )
-  ) {
-    logMsg("trying to add real player");
+  logMsg("trying to add real player");
 
-    const realPlayer = new RealPlayer(mainCharacter, characters);
-    playerCtrlState.run.realPlayers.push(realPlayer);
-    characters.forEach((character) => {
-      playerCtrlState.run.characterToRealPlayerMap.set(getPlayerIndex(character), realPlayer);
-    });
+  const realPlayer = new RealPlayer(mainCharacter, characters);
+  playerCtrlState.run.realPlayers.push(realPlayer);
+  characters.forEach((character) => {
+    playerCtrlState.run.characterToRealPlayerMap.set(getPlayerIndex(character), realPlayer);
+  });
 
-    logMsg(`real player added: ${realPlayer.toString()} (${getPlayerIndex(mainCharacter)} -> ${characters.size})`);
-  }
+  logMsg(`real player added: ${realPlayer.toString()} (${getPlayerIndex(mainCharacter)} -> ${characters.size})`);
 }
 
 export function characterToRealPlayer(character: PlayerIndex): RealPlayer {
