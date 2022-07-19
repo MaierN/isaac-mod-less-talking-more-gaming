@@ -1,7 +1,3 @@
 
-- t cain ??
 - proper random
-
-isaacscript -> si certaines fonctions marchent pas dans certains callbacks, alors ajouter un warning au runtime
-
-soul of forgotten
+- isaacscript -> si certaines fonctions marchent pas dans certains callbacks, alors ajouter un warning au runtime

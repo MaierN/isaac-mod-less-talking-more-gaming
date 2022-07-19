@@ -1,9 +1,4 @@
-let debug = false;
-
-export function toggleDebug(): void {
-  debug = !debug;
-  logMsg(`debug: ${debug}`, true);
-}
+import { config } from "./config";
 
 export function mapToString<K, V>(map: Map<K, V>): string {
   const res: string[] = [];
@@ -24,7 +19,7 @@ export function setToString<T>(set: Set<T>): string {
 export function logMsg(msg: string, toConsole = false): void {
   Isaac.DebugString(msg);
 
-  if (debug || toConsole) {
+  if (config.persistent.enablePrintToConsole || toConsole) {
     print(msg);
   }
 }

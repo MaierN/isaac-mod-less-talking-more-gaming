@@ -1,7 +1,8 @@
-import { ButtonAction } from "isaac-typescript-definitions";
+import { ButtonAction, PlayerType } from "isaac-typescript-definitions";
 import { DefaultMap, getPlayerIndex, getPlayerName, PlayerIndex, saveDataManager } from "isaacscript-common";
 import { getCollectibleGroup } from "./collectible";
-import { logMsg } from "./debug";
+import { config } from "./config";
+import { logMsg } from "./log";
 import { state } from "./state";
 
 const playerCtrlState = {
@@ -66,6 +67,11 @@ export function addRealPlayer(mainCharacter: EntityPlayer, characters: Set<Entit
   });
 
   logMsg(`real player added: ${realPlayer.toString()} (${getPlayerIndex(mainCharacter)} -> ${characters.size})`);
+
+  if (realPlayer.mainCharacter.GetPlayerType() === PlayerType.CAIN_B) {
+    config.run.enableMod = false;
+    logMsg("mod disabled because of tainted cain");
+  }
 }
 
 export function characterToRealPlayer(character: PlayerIndex): RealPlayer {

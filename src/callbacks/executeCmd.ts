@@ -1,6 +1,6 @@
 import { ModCallback } from "isaac-typescript-definitions";
-import { MOD_NAME, MOD_VERSION } from "../config";
-import { logMsg, mapToString, toggleDebug } from "../debug";
+import { config, MOD_NAME, MOD_VERSION } from "../config";
+import { logMsg, mapToString } from "../log";
 import { characterToRealPlayer } from "../playerCtrl";
 import { state } from "../state";
 
@@ -47,7 +47,8 @@ function executeCmd(command: string, parameters: string, _player: EntityPlayer) 
       [
         "debug",
         () => {
-          toggleDebug();
+          config.persistent.enablePrintToConsole = !config.persistent.enablePrintToConsole;
+          logMsg(`debug: ${config.persistent.enablePrintToConsole}`, true);
         },
       ],
     ]);

@@ -1,6 +1,7 @@
 import { CollectibleType, ItemType } from "isaac-typescript-definitions";
 import { getCollectibleName, getPlayerIndex, ModCallbackCustom, ModUpgraded, PickingUpItem } from "isaacscript-common";
-import { logMsg } from "../debug";
+import { config } from "../config";
+import { logMsg } from "../log";
 import { characterToRealPlayer } from "../playerCtrl";
 import { state } from "../state";
 
@@ -9,6 +10,10 @@ export function initCbPreItemPickup(mod: ModUpgraded): void {
 }
 
 function main(player: EntityPlayer, pickingUpItem: PickingUpItem) {
+  if (!config.run.enableMod) {
+    return;
+  }
+
   if ([ItemType.PASSIVE, ItemType.FAMILIAR].includes(pickingUpItem.itemType)) {
     const realPlayer = characterToRealPlayer(getPlayerIndex(player));
 

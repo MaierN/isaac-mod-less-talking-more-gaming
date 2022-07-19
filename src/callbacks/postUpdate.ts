@@ -1,6 +1,6 @@
 import { EntityType, ModCallback, PlayerType, PlayerVariant } from "isaac-typescript-definitions";
 import { DefaultMap, isChildPlayer, ModUpgraded, saveDataManager } from "isaacscript-common";
-import { logMsg } from "../debug";
+import { logMsg } from "../log";
 import { addRealPlayer } from "../playerCtrl";
 
 const playerTypeGroups = [

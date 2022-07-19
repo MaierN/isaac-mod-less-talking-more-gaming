@@ -23,9 +23,10 @@ If all players have the same number of items from the pool, the item is attribut
 A player can offer its items to the other players by pressing all 4 shoot buttons (A, B, X, Y) at the same time. This lets any player pick up the item, until the players leave the room.
 
 [h3]Exceptions[/h3]
-Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective.
+Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective. In addition, when playing Tainted Cain, the mod is ignored for the run due to its special mechanics.
   </description>
   <version>1.4</version>
   <visibility>Public</visibility>
+  <tag id="Lua"/>
   <tag id="Tweaks"/>
 </metadata>

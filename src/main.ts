@@ -5,7 +5,7 @@ import { initCbPostRender } from "./callbacks/postRender";
 import { initCbPostUpdate } from "./callbacks/postUpdate";
 import { initCbPreItemPickup } from "./callbacks/preItemPickup";
 import { initCbPrePickupCollision } from "./callbacks/prePickupCollision";
-import { MOD_NAME } from "./config";
+import { initConfig, MOD_NAME } from "./config";
 import { initPlayerCtrl } from "./playerCtrl";
 import { initState } from "./state";
 
@@ -17,6 +17,7 @@ function main() {
 
   initState();
   initPlayerCtrl();
+  initConfig();
 
   initCbPostRender(mod);
   initCbPrePickupCollision(mod);
