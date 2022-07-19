@@ -16,7 +16,7 @@ export function addTextInfoCollectible(pedestal: EntityPickupCollectible): void 
 
   const first = allPlayerCounts[0];
   if (first !== undefined) {
-    if (!first[0].isOfferingItems()) {
+    if (!first[0].isOfferingItems(pedestal)) {
       const player = first[0];
       playerSprite.Scale = Vector(0.8, 0.8);
       playerSprite.Play("Main", true);

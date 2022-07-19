@@ -21,7 +21,7 @@ function main(pickup: EntityPickup, collider: Entity, _low: boolean): boolean | 
       const first = getSortedRealPlayers(pedestal)[0];
       if (first !== undefined) {
         const realPlayer = characterToRealPlayer(getPlayerIndex(player));
-        if (getPlayerIndex(realPlayer.mainCharacter) === getPlayerIndex(first[0].mainCharacter) || first[0].isOfferingItems()) {
+        if (getPlayerIndex(realPlayer.mainCharacter) === getPlayerIndex(first[0].mainCharacter) || first[0].isOfferingItems(pedestal)) {
           return undefined;
         }
       }

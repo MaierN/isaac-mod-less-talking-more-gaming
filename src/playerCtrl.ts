@@ -1,5 +1,5 @@
 import { ButtonAction, PlayerType } from "isaac-typescript-definitions";
-import { DefaultMap, getPlayerIndex, getPlayerName, PlayerIndex, saveDataManager } from "isaacscript-common";
+import { CollectibleIndex, DefaultMap, getCollectibleIndex, getPlayerIndex, getPlayerName, PlayerIndex, saveDataManager } from "isaacscript-common";
 import { getCollectibleGroup } from "./collectible";
 import { config } from "./config";
 import { logMsg } from "./log";
@@ -11,7 +11,7 @@ const playerCtrlState = {
     characterToRealPlayerMap: new Map<PlayerIndex, RealPlayer>(),
   },
   room: {
-    offerItems: new DefaultMap<PlayerIndex, boolean>(false),
+    offerItems: new DefaultMap<PlayerIndex, Set<CollectibleIndex>>(() => new Set()),
   },
 };
 
@@ -32,12 +32,12 @@ export class RealPlayer {
     return `${this.mainCharacter.Index}-${getPlayerName(this.mainCharacter)}-${getPlayerIndex(this.mainCharacter)}`;
   }
 
-  offerItems(): void {
-    playerCtrlState.room.offerItems.set(getPlayerIndex(this.mainCharacter), true);
+  offerItems(item: EntityPickupCollectible): void {
+    playerCtrlState.room.offerItems.getAndSetDefault(getPlayerIndex(this.mainCharacter)).add(getCollectibleIndex(item));
   }
 
-  isOfferingItems(): boolean {
-    return playerCtrlState.room.offerItems.getAndSetDefault(getPlayerIndex(this.mainCharacter));
+  isOfferingItems(item: EntityPickupCollectible): boolean {
+    return playerCtrlState.room.offerItems.getAndSetDefault(getPlayerIndex(this.mainCharacter)).has(getCollectibleIndex(item));
   }
 
   isDead(): boolean {
@@ -54,6 +54,10 @@ export class RealPlayer {
 
   animateHappy(): void {
     this.characters.forEach((character) => character.AnimateHappy());
+  }
+
+  isExtraAnimationFinished(): boolean {
+    return [...this.characters].some((character) => character.IsExtraAnimationFinished());
   }
 }
 

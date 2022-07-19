@@ -1,7 +1,8 @@
-import { EntityType, ModCallback, PlayerType, PlayerVariant } from "isaac-typescript-definitions";
-import { DefaultMap, isChildPlayer, ModUpgraded, saveDataManager } from "isaacscript-common";
+import { ButtonAction, EntityType, ModCallback, PickupVariant, PlayerType, PlayerVariant } from "isaac-typescript-definitions";
+import { DefaultMap, getPlayerIndex, isChildPlayer, ModUpgraded, saveDataManager } from "isaacscript-common";
+import { isCollectibleInteresting } from "../collectible";
 import { logMsg } from "../log";
-import { addRealPlayer } from "../playerCtrl";
+import { addRealPlayer, getAliveRealPlayers, getSortedRealPlayers } from "../playerCtrl";
 
 const playerTypeGroups = [
   [PlayerType.JACOB, PlayerType.ESAU],
@@ -60,4 +61,29 @@ function main() {
     }
   });
   postUpdateState.run.newPlayers = [];
+
+  getAliveRealPlayers().forEach((realPlayer) => {
+    if (
+      [ButtonAction.SHOOT_LEFT, ButtonAction.SHOOT_RIGHT, ButtonAction.SHOOT_UP, ButtonAction.SHOOT_DOWN].every((action) =>
+        realPlayer.isActionPressed(action),
+      )
+    ) {
+      if (realPlayer.isExtraAnimationFinished()) {
+        realPlayer.animateHappy();
+      }
+
+      Isaac.FindByType(EntityType.PICKUP, PickupVariant.COLLECTIBLE).forEach((entity) => {
+        const pedestal = entity.ToPickup() as EntityPickupCollectible;
+
+        const allPlayerCounts = getSortedRealPlayers(pedestal);
+        if (
+          isCollectibleInteresting(pedestal) &&
+          allPlayerCounts[0] !== undefined &&
+          getPlayerIndex(allPlayerCounts[0][0].mainCharacter) === getPlayerIndex(realPlayer.mainCharacter)
+        ) {
+          realPlayer.offerItems(pedestal);
+        }
+      });
+    }
+  });
 }

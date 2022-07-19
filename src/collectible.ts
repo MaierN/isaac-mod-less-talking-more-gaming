@@ -1,7 +1,7 @@
 import { CollectiblePedestalType, CollectibleType, RoomType } from "isaac-typescript-definitions";
 import { game, getCollectiblePedestalType, isPassiveCollectible } from "isaacscript-common";
 
-const questItems = [
+const teamSharedItems = [
   CollectibleType.KEY_PIECE_1,
   CollectibleType.KEY_PIECE_2,
   CollectibleType.KNIFE_PIECE_1,
@@ -16,7 +16,7 @@ export function isCollectibleInteresting(collectible: EntityPickupCollectible): 
     collectible.SubType !== CollectibleType.NULL &&
     isPassiveCollectible(collectible.SubType) &&
     collectible.Price >= 0 &&
-    !questItems.includes(collectible.SubType)
+    !teamSharedItems.includes(collectible.SubType)
   );
 }
 
