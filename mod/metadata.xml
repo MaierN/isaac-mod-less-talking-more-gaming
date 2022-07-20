@@ -25,7 +25,7 @@ A player can offer its items to the other players by pressing all 4 shoot button
 [h3]Exceptions[/h3]
 Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective. In addition, when playing Tainted Cain, the mod is ignored for the run due to its special mechanics.
   </description>
-  <version>1.4</version>
+  <version>1.7</version>
   <visibility>Public</visibility>
   <tag id="Lua"/>
   <tag id="Tweaks"/>
