@@ -9,7 +9,6 @@ import {
   saveDataManager,
 } from "isaacscript-common";
 import { isInterestingCollectible } from "../helpers/collectibles";
-import { printMsg } from "../helpers/log";
 import { getAllPersons, getPersonForPlayer, PersonIndex } from "../helpers/persons";
 import { mapToString, sortByKeys } from "../helpers/utils";
 import { addDebugCommand } from "./consoleCommands";
@@ -35,13 +34,13 @@ export function itemCounterInit(mod: ModUpgraded): void {
   mod.AddCallbackCustom(ModCallbackCustom.PRE_ITEM_PICKUP, preItemPickup);
 
   addDebugCommand("itemCounts", (_params) => {
-    printMsg(mapToString(v.run.itemCounts));
+    print(mapToString(v.run.itemCounts));
   });
   addDebugCommand("randomPriorities", (_params) => {
-    printMsg(mapToString(v.run.randomPriorities));
+    print(mapToString(v.run.randomPriorities));
   });
   addDebugCommand("itemPools", (_params) => {
-    printMsg(mapToString(vEphemeral.room.itemPools));
+    print(mapToString(vEphemeral.room.itemPools));
   });
 }
 

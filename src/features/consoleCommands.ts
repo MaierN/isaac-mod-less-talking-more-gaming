@@ -1,6 +1,4 @@
 import { addConsoleCommand } from "isaacscript-common";
-import { MOD_NAME, MOD_VERSION } from "../config";
-import { printMsg } from "../helpers/log";
 
 const debugCommands = new Map<string, (params: string[]) => void>();
 
@@ -12,15 +10,11 @@ export function consoleCommandsInit(): void {
       if (debugCommands.has(command)) {
         debugCommands.get(command)?.(params.slice(1));
       } else {
-        printMsg("unknown command");
+        print("unknown command");
       }
     } else {
-      printMsg([...debugCommands.keys()].sort().join(", "));
+      print([...debugCommands.keys()].sort().join(", "));
     }
-  });
-
-  addDebugCommand("version", (_params) => {
-    printMsg(`${MOD_NAME} v${MOD_VERSION}`);
   });
 }
 

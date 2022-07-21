@@ -10,7 +10,6 @@ import {
 } from "isaacscript-common";
 import { config } from "../config";
 import { addDebugCommand } from "../features/consoleCommands";
-import { printMsg } from "./log";
 import { mapToString } from "./utils";
 
 const v = {
@@ -27,7 +26,7 @@ export function personsInit(mod: ModUpgraded): void {
   mod.AddCallbackCustom(ModCallbackCustom.POST_PLAYER_INIT_LATE, postPlayerInitLate);
 
   addDebugCommand("deadToAliveTaintedLazarus", (_params) => {
-    printMsg(mapToString(v.run.deadToAliveTaintedLazarus));
+    print(mapToString(v.run.deadToAliveTaintedLazarus));
   });
 }
 

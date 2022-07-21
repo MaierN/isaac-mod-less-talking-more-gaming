@@ -1,12 +1,10 @@
 import { saveDataManager } from "isaacscript-common";
+import { addDebugCommand } from "./features/consoleCommands";
 
 export const MOD_NAME = "Less talking. More gaming.";
-export const MOD_VERSION = "1.7";
+export const MOD_VERSION = "1.8";
 
 export const config = {
-  persistent: {
-    enablePrintToConsole: true,
-  },
   run: {
     enableMod: true,
   },
@@ -14,4 +12,8 @@ export const config = {
 
 export function configInit(): void {
   saveDataManager("config", config);
+
+  addDebugCommand("version", (_params) => {
+    print(`${MOD_NAME} v${MOD_VERSION}`);
+  });
 }
