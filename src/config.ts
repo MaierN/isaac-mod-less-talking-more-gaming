@@ -5,13 +5,13 @@ export const MOD_VERSION = "1.7";
 
 export const config = {
   persistent: {
-    enablePrintToConsole: false,
+    enablePrintToConsole: true,
   },
   run: {
     enableMod: true,
   },
 };
 
-export function initConfig(): void {
-  saveDataManager("configState", config);
+export function configInit(): void {
+  saveDataManager("config", config);
 }

@@ -1,5 +1,3 @@
-import { config } from "./config";
-
 export function mapToString<K, V>(map: Map<K, V>): string {
   const res: string[] = [];
   for (const [key, value] of map.entries()) {
@@ -16,10 +14,15 @@ export function setToString<T>(set: Set<T>): string {
   return res.join(", ");
 }
 
-export function logMsg(msg: string, toConsole = false): void {
-  Isaac.DebugString(msg);
-
-  if (config.persistent.enablePrintToConsole || toConsole) {
-    print(msg);
-  }
+export function sortByKeys<T>(array: T[], keys: Array<(elt: T) => number>): T[] {
+  return array.sort((a, b) => {
+    for (const key of keys) {
+      const valA = key(a);
+      const valB = key(b);
+      if (valA !== valB) {
+        return valA - valB;
+      }
+    }
+    return 0;
+  });
 }
