@@ -35,7 +35,8 @@ function postUpdate() {
     if (
       [ButtonAction.SHOOT_LEFT, ButtonAction.SHOOT_RIGHT, ButtonAction.SHOOT_UP, ButtonAction.SHOOT_DOWN].every((action) =>
         Input.IsActionPressed(action, player.ControllerIndex),
-      ) || Input.IsButtonPressed(Keyboard.O, player.ControllerIndex)
+      ) ||
+      Input.IsButtonPressed(Keyboard.O, player.ControllerIndex)
     ) {
       offerAvailableItems(player);
     }
