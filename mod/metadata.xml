@@ -20,7 +20,7 @@ The mod tries to create a fair distribution of the items based on the item pools
 If all players have the same number of items from the pool, the item is attributed by following an order randomly chosen at the beginning of the run.
 
 [h3]I don't want this item...[/h3]
-A player can offer its items to the other players by pressing all 4 shoot buttons (A, B, X, Y) at the same time. This lets any player pick up the item, until the players leave the room.
+A player can offer its items to the other players by pressing all 4 shoot buttons (A, B, X, Y) at the same time. This lets any player pick up the item, until the players leave the room. The keyboard user can also press the 'o' key (this is useful if your keyboard doesn't allow some key combinations due to ghosting).
 
 [h3]Exceptions[/h3]
 Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective. In addition, when playing Tainted Cain, the mod is ignored for the run due to its special mechanics.
@@ -28,7 +28,7 @@ Items that cost hearts and active items are not affected by the mod, as the dist
 [h3]Sources[/h3]
 Source code and license available [here](https://github.com/MaierN/isaac-mod-less-talking-more-gaming)
   </description>
-  <version>1.8</version>
+  <version>1.9</version>
   <visibility>Public</visibility>
   <tag id="Lua"/>
   <tag id="Tweaks"/>
