@@ -23,10 +23,10 @@ If all players have the same number of items from the pool, the item is attribut
 A player can offer its items to the other players by pressing all 4 shoot buttons (A, B, X, Y) at the same time. This lets any player pick up the item, until the players leave the room. The keyboard user can also press the 'o' key (this is useful if your keyboard doesn't allow some key combinations due to ghosting).
 
 [h3]Exceptions[/h3]
-Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective. In addition, when playing Tainted Cain, the mod is ignored for the run due to its special mechanics.
+Items that cost hearts and active items are not affected by the mod, as the distribution of those items is more subjective. In addition, items that only benefit the team and not the player are not affected by the mod. Finally, when playing Tainted Cain, the mod is inactive for the run due to its special mechanics.
 
 [h3]Sources[/h3]
-Source code and license available [here](https://github.com/MaierN/isaac-mod-less-talking-more-gaming)
+Source code and license available here https://github.com/MaierN/isaac-mod-less-talking-more-gaming
   </description>
   <version>1.9</version>
   <visibility>Public</visibility>
