@@ -102,4 +102,13 @@ const teamSharedItems = [
   CollectibleType.VANISHING_TWIN,
   CollectibleType.VOODOO_HEAD,
   CollectibleType.WORM_FRIEND,
+  CollectibleType.ATHAME,
+  CollectibleType.BETRAYAL,
+  CollectibleType.BURSTING_SACK,
+  CollectibleType.CONTAGION,
+  CollectibleType.BLOOD_PUPPY,
+  CollectibleType.LIL_PORTAL,
+  CollectibleType.PURGATORY,
+  CollectibleType.CURSED_EYE,
+  CollectibleType.CURSE_OF_THE_TOWER,
 ];
