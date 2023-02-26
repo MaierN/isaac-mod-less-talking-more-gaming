@@ -28,7 +28,7 @@ Items that cost hearts and active items are not affected by the mod, as the dist
 [h3]Sources[/h3]
 Source code and license available here https://github.com/MaierN/isaac-mod-less-talking-more-gaming
   </description>
-  <version>1.9</version>
+  <version>1.10</version>
   <visibility>Public</visibility>
   <tag id="Lua"/>
   <tag id="Tweaks"/>
