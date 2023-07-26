@@ -44,6 +44,8 @@ const config = {
 
   // `pnpm` requires that the plugin is explicitly loaded.
   plugins: [require.resolve("prettier-plugin-organize-imports")],
+
+  printWidth: 100,
 };
 
 module.exports = config;

@@ -15,11 +15,9 @@ import { isPersonOfferingItem } from "./offering";
 
 const vEphemeral = {
   room: {
-    hiddenItems: new DefaultMap<
-      PickupIndex,
-      boolean,
-      [arg: EntityPickupCollectible]
-    >((pedestal) => isBlindCollectible(pedestal)),
+    hiddenItems: new DefaultMap<PickupIndex, boolean, [arg: EntityPickupCollectible]>((pedestal) =>
+      isBlindCollectible(pedestal),
+    ),
   },
 };
 
@@ -35,16 +33,11 @@ function postRender() {
   }
 
   let collectibles = getCollectibles();
-  collectibles = collectibles.filter((collectible) =>
-    isInterestingCollectible(collectible),
-  );
+  collectibles = collectibles.filter((collectible) => isInterestingCollectible(collectible));
   collectibles.forEach((collectible) => {
     if (
       getAllPersons().size <= 1 ||
-      vEphemeral.room.hiddenItems.getAndSetDefault(
-        mod.getPickupIndex(collectible),
-        collectible,
-      )
+      vEphemeral.room.hiddenItems.getAndSetDefault(mod.getPickupIndex(collectible), collectible)
     ) {
       return;
     }
@@ -74,16 +67,6 @@ function addItemOverlay(collectible: EntityPickupCollectible) {
     playerSprite.SetFrame((player.GetPlayerType() as number) + 1);
     playerSprite.RenderLayer(0, pos);
 
-    Isaac.RenderScaledText(
-      `P${player.Index + 1}`,
-      pos.X + 6,
-      pos.Y,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-    );
+    Isaac.RenderScaledText(`P${player.Index + 1}`, pos.X + 6, pos.Y, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
   }
 }

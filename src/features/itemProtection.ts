@@ -16,19 +16,12 @@ export function itemProtectionInit(): void {
   mod.AddCallback(ModCallback.PRE_PICKUP_COLLISION, prePickupCollision);
 }
 
-function prePickupCollision(
-  pickup: EntityPickup,
-  collider: Entity,
-  _low: boolean,
-) {
+function prePickupCollision(pickup: EntityPickup, collider: Entity, _low: boolean) {
   if (!config.run.enableMod) {
     return undefined;
   }
 
-  if (
-    pickup.Variant !== PickupVariant.COLLECTIBLE ||
-    collider.Type !== EntityType.PLAYER
-  ) {
+  if (pickup.Variant !== PickupVariant.COLLECTIBLE || collider.Type !== EntityType.PLAYER) {
     return undefined;
   }
   const collectible = pickup as EntityPickupCollectible;

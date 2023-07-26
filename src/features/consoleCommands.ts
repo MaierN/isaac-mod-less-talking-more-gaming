@@ -18,9 +18,6 @@ export function consoleCommandsInit(): void {
   });
 }
 
-export function addDebugCommand(
-  name: string,
-  callback: (params: string[]) => void,
-): void {
+export function addDebugCommand(name: string, callback: (params: string[]) => void): void {
   debugCommands.set(name, callback);
 }

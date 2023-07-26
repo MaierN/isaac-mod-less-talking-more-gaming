@@ -1,9 +1,7 @@
 import { CollectibleType } from "isaac-typescript-definitions";
 import { isPassiveCollectible } from "isaacscript-common";
 
-export function isInterestingCollectible(
-  collectible: EntityPickupCollectible,
-): boolean {
+export function isInterestingCollectible(collectible: EntityPickupCollectible): boolean {
   return (
     collectible.SubType !== CollectibleType.NULL &&
     isPassiveCollectible(collectible.SubType) &&

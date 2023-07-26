@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <metadata>
   <name>Less talking. More Gaming. (Fair item distribution in co-op)</name>
   <directory>less talking more gaming</directory>
   <id>2836331272</id>
-  <description>[b]Less talking. More gaming.[/b]
+  <description>
+    [b]Less talking. More gaming.[/b]
 [i]A fair item distribution in co-op[/i]
 
 This mod assigns each encountered item to a single player, making the item available only for the selected player.
@@ -30,6 +31,6 @@ Source code and license available here https://github.com/MaierN/isaac-mod-less-
   </description>
   <version>1.10</version>
   <visibility>Public</visibility>
-  <tag id="Lua"/>
-  <tag id="Tweaks"/>
+  <tag id="Lua" />
+  <tag id="Tweaks" />
 </metadata>
