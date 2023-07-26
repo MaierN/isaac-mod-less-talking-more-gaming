@@ -3589,7 +3589,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isaacscript-common@npm:^30.12.2":
+"isaacscript-common@npm:^30.12.3":
   version: 30.12.3
   resolution: "isaacscript-common@npm:30.12.3"
   dependencies:
@@ -3908,7 +3908,7 @@ __metadata:
   dependencies:
     isaac-typescript-definitions: ^13.0.16
     isaacscript: ^3.6.50
-    isaacscript-common: ^30.12.2
+    isaacscript-common: ^30.12.3
     isaacscript-lint: ^4.16.10
     isaacscript-spell: ^1.2.40
     isaacscript-tsconfig: ^4.0.0
@@ -4431,14 +4431,14 @@ __metadata:
   linkType: hard
 
 "npm-pick-manifest@npm:^8.0.0":
-  version: 8.0.1
-  resolution: "npm-pick-manifest@npm:8.0.1"
+  version: 8.0.2
+  resolution: "npm-pick-manifest@npm:8.0.2"
   dependencies:
     npm-install-checks: ^6.0.0
     npm-normalize-package-bin: ^3.0.0
     npm-package-arg: ^10.0.0
     semver: ^7.3.5
-  checksum: b8e16f2fbcc40ba7d1405c9b566bcee32488c6709f883207f709b0715ed34e2f3f3bc5bf5cb9563d6aa23cb878102bf0011ba22cce9235caa9a0349784b48ecd
+  checksum: c9f71b57351a3a241a7e56148332f2f341a09dff2a1b1f4ffb1517eac25f1888ac7fbce4939e522cbd533577448c307d05fff0c32430cc03c8c6179fac320cd4
   languageName: node
   linkType: hard
 
