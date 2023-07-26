@@ -9,16 +9,15 @@
     "afterbirth",
     "repentance"
   ],
+  "license": "GPL-3.0",
   "type": "commonjs",
   "dependencies": {
-    "@types/node": "^20.4.5",
     "isaac-typescript-definitions": "^13.0.16",
     "isaacscript": "^3.6.50",
     "isaacscript-common": "^30.12.2",
     "isaacscript-lint": "^4.16.10",
     "isaacscript-spell": "^1.2.40",
     "isaacscript-tsconfig": "^4.0.0",
-    "ts-node": "^10.9.1",
     "typescript": "^5.1.6",
     "typescript-to-lua": "^1.16.3"
   }

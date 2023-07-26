@@ -1,15 +1,16 @@
+# ----
+# test
+# ----
+
+# OS-specific artifacts
+.DS_Store
+thumbs.db
 
 # Per-user IsaacScript settings
 isaacscript.json
 
 # The transpiled Lua output
 mod/main.lua
-
-# Windows artifacts
-thumbs.db
-
-# MacOS artifacts
-.DS_Store
 
 # ------------------------------
 # GitHub Node.gitignore template

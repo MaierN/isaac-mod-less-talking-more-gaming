@@ -4,14 +4,8 @@
   "$schema": "https://raw.githubusercontent.com/IsaacScript/isaacscript/main/packages/isaacscript-cli/schemas/tsconfig-isaacscript-schema.json",
 
   // We extend the standard IsaacScript config:
-  // https://github.com/IsaacScript/isaacscript/blob/main/packages/isaacscript-tsconfig/tsconfig.mod.json
+  // https://github.com/IsaacScript/isaacscript/blob/main/packages/isaacscript-tsconfig/configs/tsconfig.mod.json
   "extends": "isaacscript-tsconfig/tsconfig.mod.json",
-
-  // https://www.typescriptlang.org/docs/handbook/compiler-options.html
-  "compilerOptions": {
-    // Specifies the root folder within your source files.
-    "rootDir": "./src",
-  },
 
   // A list of the TypeScript files to compile.
   "include": ["./src/**/*.ts"],
@@ -23,14 +17,16 @@
     "luaBundleEntry": "./src/main.ts",
     "luaPlugins": [
       // A plugin to add an explanatory comment at the top of the compiled "main.lua" file.
-      { "name": "./plugins/addIsaacScriptCommentHeader.ts" },
+      { "name": "isaacscript/src/plugins/addIsaacScriptCommentHeader.js" },
 
       // A plugin to make enums safe from global variables.
-      { "name": "./plugins/noExtendedEnums.ts" },
+      { "name": "isaacscript/src/plugins/noExtendedEnums.js" },
 
       // Uncomment this and recompile the mod to enable crash debugging, which will tell you the
-      // exact line of the mod that is causing the crash.
-      // { "name": "./plugins/addCrashDebugStatements.ts" },
+      // exact line of the mod that is causing the crash. For more information, read the comment at
+      // the top of the file:
+      // https://github.com/IsaacScript/isaacscript/blob/main/packages/isaacscript-cli/src/plugins/addCrashDebugStatements.ts
+      // { "name": "isaacscript/src/plugins/addCrashDebugStatements.js" },
     ],
     "noHeader": true,
     "noImplicitGlobalVariables": true,
