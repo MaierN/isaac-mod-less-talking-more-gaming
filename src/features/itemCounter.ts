@@ -37,10 +37,6 @@ export function itemCounterInit(): void {
   });
 }
 
-export function getCounterKey(person: PersonIndex, pool: ItemPoolType): string {
-  return `${person}/${ItemPoolType[pool]}`;
-}
-
 export function getAttributedPerson(collectible: EntityPickupCollectible): PersonIndex | undefined {
   const persons = getAllPersons();
   const pool = mod.getCollectibleItemPoolType(collectible);
@@ -55,6 +51,10 @@ export function getAttributedPerson(collectible: EntityPickupCollectible): Perso
   );
 
   return sortedPersons[0];
+}
+
+function getCounterKey(person: PersonIndex, pool: ItemPoolType): string {
+  return `${person}/${ItemPoolType[pool]}`;
 }
 
 function getTotalItemCount(person: PersonIndex): number {
