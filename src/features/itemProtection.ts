@@ -1,21 +1,34 @@
-import { EntityType, ModCallback, PickupVariant, PlayerVariant } from "isaac-typescript-definitions";
-import { isChildPlayer, ModUpgraded } from "isaacscript-common";
+import {
+  EntityType,
+  ModCallback,
+  PickupVariant,
+  PlayerVariant,
+} from "isaac-typescript-definitions";
+import { isChildPlayer } from "isaacscript-common";
 import { config } from "../config";
 import { isInterestingCollectible } from "../helpers/collectibles";
 import { getPersonForPlayer } from "../helpers/persons";
+import { mod } from "../mod";
 import { getAttributedPerson } from "./itemCounter";
 import { isPersonOfferingItem } from "./offering";
 
-export function itemProtectionInit(mod: ModUpgraded): void {
+export function itemProtectionInit(): void {
   mod.AddCallback(ModCallback.PRE_PICKUP_COLLISION, prePickupCollision);
 }
 
-function prePickupCollision(pickup: EntityPickup, collider: Entity, _low: boolean) {
+function prePickupCollision(
+  pickup: EntityPickup,
+  collider: Entity,
+  _low: boolean,
+) {
   if (!config.run.enableMod) {
     return undefined;
   }
 
-  if (pickup.Variant !== PickupVariant.COLLECTIBLE || collider.Type !== EntityType.PLAYER) {
+  if (
+    pickup.Variant !== PickupVariant.COLLECTIBLE ||
+    collider.Type !== EntityType.PLAYER
+  ) {
     return undefined;
   }
   const collectible = pickup as EntityPickupCollectible;

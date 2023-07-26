@@ -1,28 +1,30 @@
 import { ModCallback } from "isaac-typescript-definitions";
 import {
-  CollectibleIndex,
   DefaultMap,
+  PickupIndex,
   game,
-  getCollectibleIndex,
   getCollectibles,
   isBlindCollectible,
-  ModUpgraded,
-  saveDataManager,
 } from "isaacscript-common";
 import { config } from "../config";
 import { isInterestingCollectible } from "../helpers/collectibles";
 import { getAllPersons, getPlayerForPerson } from "../helpers/persons";
+import { mod } from "../mod";
 import { getAttributedPerson } from "./itemCounter";
 import { isPersonOfferingItem } from "./offering";
 
 const vEphemeral = {
   room: {
-    hiddenItems: new DefaultMap<CollectibleIndex, boolean, [arg: EntityPickupCollectible]>((pedestal) => isBlindCollectible(pedestal)),
+    hiddenItems: new DefaultMap<
+      PickupIndex,
+      boolean,
+      [arg: EntityPickupCollectible]
+    >((pedestal) => isBlindCollectible(pedestal)),
   },
 };
 
-export function overlayInit(mod: ModUpgraded): void {
-  saveDataManager("overlayEphemeral", vEphemeral, () => false);
+export function overlayInit(): void {
+  mod.saveDataManager("overlayEphemeral", vEphemeral, () => false);
 
   mod.AddCallback(ModCallback.POST_RENDER, postRender);
 }
@@ -33,9 +35,17 @@ function postRender() {
   }
 
   let collectibles = getCollectibles();
-  collectibles = collectibles.filter((collectible) => isInterestingCollectible(collectible));
+  collectibles = collectibles.filter((collectible) =>
+    isInterestingCollectible(collectible),
+  );
   collectibles.forEach((collectible) => {
-    if (getAllPersons().size <= 1 || vEphemeral.room.hiddenItems.getAndSetDefault(getCollectibleIndex(collectible), collectible)) {
+    if (
+      getAllPersons().size <= 1 ||
+      vEphemeral.room.hiddenItems.getAndSetDefault(
+        mod.getPickupIndex(collectible),
+        collectible,
+      )
+    ) {
       return;
     }
 
@@ -64,6 +74,16 @@ function addItemOverlay(collectible: EntityPickupCollectible) {
     playerSprite.SetFrame((player.GetPlayerType() as number) + 1);
     playerSprite.RenderLayer(0, pos);
 
-    Isaac.RenderScaledText(`P${player.Index + 1}`, pos.X + 6, pos.Y, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+    Isaac.RenderScaledText(
+      `P${player.Index + 1}`,
+      pos.X + 6,
+      pos.Y,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+    );
   }
 }

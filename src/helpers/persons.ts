@@ -1,15 +1,13 @@
 import { PlayerType, PlayerVariant } from "isaac-typescript-definitions";
 import {
+  ModCallbackCustom,
+  PlayerIndex,
   getPlayerIndex,
   getPlayers,
-  getTaintedLazarusSubPlayer,
-  ModCallbackCustom,
-  ModUpgraded,
-  PlayerIndex,
-  saveDataManager,
 } from "isaacscript-common";
 import { config } from "../config";
 import { addDebugCommand } from "../features/consoleCommands";
+import { mod } from "../mod";
 import { mapToString } from "./utils";
 
 const v = {
@@ -20,10 +18,13 @@ const v = {
 
 export type PersonIndex = PlayerIndex;
 
-export function personsInit(mod: ModUpgraded): void {
-  saveDataManager("persons", v);
+export function personsInit(): void {
+  mod.saveDataManager("persons", v);
 
-  mod.AddCallbackCustom(ModCallbackCustom.POST_PLAYER_INIT_LATE, postPlayerInitLate);
+  mod.AddCallbackCustom(
+    ModCallbackCustom.POST_PLAYER_INIT_LATE,
+    postPlayerInitLate,
+  );
 
   addDebugCommand("deadToAliveTaintedLazarus", (_params) => {
     print(mapToString(v.run.deadToAliveTaintedLazarus));
@@ -32,7 +33,10 @@ export function personsInit(mod: ModUpgraded): void {
 
 export function getAllPersons(): Set<PersonIndex> {
   let players = getPlayers();
-  players = players.filter((player) => player.Variant === PlayerVariant.PLAYER && !player.IsCoopGhost());
+  players = players.filter(
+    (player) =>
+      player.Variant === PlayerVariant.PLAYER && !player.IsCoopGhost(),
+  );
 
   return new Set(players.map((player) => getPersonForPlayer(player)));
 }
@@ -49,7 +53,9 @@ export function getPersonForPlayer(player: EntityPlayer): PersonIndex {
   return playerIndex;
 }
 
-export function getPlayerForPerson(person: PersonIndex): EntityPlayer | undefined {
+export function getPlayerForPerson(
+  person: PersonIndex,
+): EntityPlayer | undefined {
   return getPlayers()
     .find((player) => getPersonForPlayer(player) === person)
     ?.GetMainTwin();
@@ -57,7 +63,7 @@ export function getPlayerForPerson(person: PersonIndex): EntityPlayer | undefine
 
 function postPlayerInitLate(player: EntityPlayer) {
   if (player.GetPlayerType() === PlayerType.LAZARUS_B) {
-    const deadPlayer = getTaintedLazarusSubPlayer(player);
+    const deadPlayer = mod.getTaintedLazarusSubPlayer(player);
     if (deadPlayer === undefined) {
       return;
     }

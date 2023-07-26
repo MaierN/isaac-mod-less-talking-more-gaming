@@ -1,9 +1,9 @@
-import { addConsoleCommand } from "isaacscript-common";
+import { mod } from "../mod";
 
 const debugCommands = new Map<string, (params: string[]) => void>();
 
 export function consoleCommandsInit(): void {
-  addConsoleCommand("ltmg", (paramString) => {
+  mod.addConsoleCommand("ltmg", (paramString) => {
     const params = paramString.split(" ");
     const command = params[0];
     if (command !== undefined && command.length > 0) {
@@ -18,6 +18,9 @@ export function consoleCommandsInit(): void {
   });
 }
 
-export function addDebugCommand(name: string, callback: (params: string[]) => void): void {
+export function addDebugCommand(
+  name: string,
+  callback: (params: string[]) => void,
+): void {
   debugCommands.set(name, callback);
 }

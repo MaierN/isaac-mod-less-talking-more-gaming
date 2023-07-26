@@ -1,5 +1,6 @@
-import { enableExtraConsoleCommands, log, upgradeMod } from "isaacscript-common";
-import { configInit, MOD_NAME } from "./config";
+import { log } from "isaacscript-common";
+import { configInit } from "./config";
+import { MOD_NAME } from "./constants";
 import { consoleCommandsInit } from "./features/consoleCommands";
 import { itemCounterInit } from "./features/itemCounter";
 import { itemProtectionInit } from "./features/itemProtection";
@@ -10,20 +11,15 @@ import { personsInit } from "./helpers/persons";
 main();
 
 function main() {
-  const modVanilla = RegisterMod(MOD_NAME, 1);
-  const mod = upgradeMod(modVanilla);
-
-  enableExtraConsoleCommands(mod);
-
   configInit();
 
-  personsInit(mod);
+  personsInit();
 
   consoleCommandsInit();
-  itemCounterInit(mod);
-  itemProtectionInit(mod);
-  offeringInit(mod);
-  overlayInit(mod);
+  itemCounterInit();
+  itemProtectionInit();
+  offeringInit();
+  overlayInit();
 
   log(`${MOD_NAME} initialized.`);
 }

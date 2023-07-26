@@ -39,6 +39,4 @@ module.exports = {
   // The default is "struct". However, whitespace cannot be reformatted unless this is set to
   // "ignore".
   xmlWhitespaceSensitivity: "ignore",
-
-  printWidth: 150,
 };

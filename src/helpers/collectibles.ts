@@ -1,7 +1,9 @@
 import { CollectibleType } from "isaac-typescript-definitions";
 import { isPassiveCollectible } from "isaacscript-common";
 
-export function isInterestingCollectible(collectible: EntityPickupCollectible): boolean {
+export function isInterestingCollectible(
+  collectible: EntityPickupCollectible,
+): boolean {
   return (
     collectible.SubType !== CollectibleType.NULL &&
     isPassiveCollectible(collectible.SubType) &&
@@ -83,7 +85,7 @@ const teamSharedItems = [
   CollectibleType.POUND_OF_FLESH,
   CollectibleType.BATTERY_PACK,
   CollectibleType.BOOSTER_PACK,
-  CollectibleType.READING,
+  CollectibleType.CARD_READING,
   CollectibleType.DIRTY_MIND,
   CollectibleType.FRUITY_PLUM,
   CollectibleType.GLITCHED_CROWN,

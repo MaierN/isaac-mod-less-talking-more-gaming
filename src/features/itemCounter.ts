@@ -1,16 +1,23 @@
-import { CollectibleType, ItemPoolType, ItemType, ModCallback } from "isaac-typescript-definitions";
+import {
+  CollectibleType,
+  ItemPoolType,
+  ItemType,
+  ModCallback,
+} from "isaac-typescript-definitions";
 import {
   DefaultMap,
-  getCollectibleItemPoolType,
-  getCollectibles,
   ModCallbackCustom,
-  ModUpgraded,
   PickingUpItem,
-  saveDataManager,
+  getCollectibles,
 } from "isaacscript-common";
 import { isInterestingCollectible } from "../helpers/collectibles";
-import { getAllPersons, getPersonForPlayer, PersonIndex } from "../helpers/persons";
+import {
+  PersonIndex,
+  getAllPersons,
+  getPersonForPlayer,
+} from "../helpers/persons";
 import { mapToString, sortByKeys } from "../helpers/utils";
+import { mod } from "../mod";
 import { addDebugCommand } from "./consoleCommands";
 
 const v = {
@@ -26,9 +33,9 @@ const vEphemeral = {
   },
 };
 
-export function itemCounterInit(mod: ModUpgraded): void {
-  saveDataManager("itemCounter", v);
-  saveDataManager("itemCounterEphemeral", vEphemeral, () => false);
+export function itemCounterInit(): void {
+  mod.saveDataManager("itemCounter", v);
+  mod.saveDataManager("itemCounterEphemeral", vEphemeral, () => false);
 
   mod.AddCallback(ModCallback.POST_UPDATE, postUpdate);
   mod.AddCallbackCustom(ModCallbackCustom.PRE_ITEM_PICKUP, preItemPickup);
@@ -48,16 +55,20 @@ export function getCounterKey(person: PersonIndex, pool: ItemPoolType): string {
   return `${person}/${ItemPoolType[pool]}`;
 }
 
-export function getAttributedPerson(collectible: EntityPickupCollectible): PersonIndex | undefined {
+export function getAttributedPerson(
+  collectible: EntityPickupCollectible,
+): PersonIndex | undefined {
   const persons = getAllPersons();
-  const pool = getCollectibleItemPoolType(collectible);
+  const pool = mod.getCollectibleItemPoolType(collectible);
 
   const sortedPersons = sortByKeys(
     [...persons],
     [
-      (person) => v.run.itemCounts.getAndSetDefault(getCounterKey(person, pool)),
+      (person) =>
+        v.run.itemCounts.getAndSetDefault(getCounterKey(person, pool)),
       (person) => getTotalItemCount(person),
-      (person) => v.run.randomPriorities.getAndSetDefault(getCounterKey(person, pool)),
+      (person) =>
+        v.run.randomPriorities.getAndSetDefault(getCounterKey(person, pool)),
     ],
   );
 
@@ -65,7 +76,9 @@ export function getAttributedPerson(collectible: EntityPickupCollectible): Perso
 }
 
 function getTotalItemCount(person: PersonIndex): number {
-  const counts = [...v.run.itemCounts.entries()].filter(([key]) => key.startsWith(`${person}/`));
+  const counts = [...v.run.itemCounts.entries()].filter(([key]) =>
+    key.startsWith(`${person}/`),
+  );
   const sum = counts.reduce((acc, [, count]) => acc + count, 0);
 
   return sum;
@@ -73,9 +86,11 @@ function getTotalItemCount(person: PersonIndex): number {
 
 function postUpdate() {
   let collectibles = getCollectibles();
-  collectibles = collectibles.filter((collectible) => isInterestingCollectible(collectible));
+  collectibles = collectibles.filter((collectible) =>
+    isInterestingCollectible(collectible),
+  );
   collectibles.forEach((collectible) => {
-    const pool = getCollectibleItemPoolType(collectible);
+    const pool = mod.getCollectibleItemPoolType(collectible);
     vEphemeral.room.itemPools.set(collectible.SubType, pool);
   });
 }
@@ -83,7 +98,9 @@ function postUpdate() {
 function preItemPickup(player: EntityPlayer, pickingUpItem: PickingUpItem) {
   if ([ItemType.PASSIVE, ItemType.FAMILIAR].includes(pickingUpItem.itemType)) {
     const person = getPersonForPlayer(player);
-    const pool = vEphemeral.room.itemPools.get(pickingUpItem.subType as CollectibleType);
+    const pool = vEphemeral.room.itemPools.get(
+      pickingUpItem.subType as CollectibleType,
+    );
 
     if (pool !== undefined) {
       const key = getCounterKey(person, pool);
